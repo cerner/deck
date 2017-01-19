@@ -1,0 +1,230 @@
+'use strict';
+
+import _ from 'lodash';
+
+import {CLOUD_PROVIDER_REGISTRY} from 'core/cloudProvider/cloudProvider.registry';
+import {CONFIRMATION_MODAL_SERVICE} from 'core/confirmationModal/confirmationModal.service';
+import {INSTANCE_READ_SERVICE} from 'core/instance/instance.read.service';
+import {INSTANCE_WRITE_SERVICE} from 'core/instance/instance.write.service';
+import {RECENT_HISTORY_SERVICE} from 'core/history/recentHistory.service';
+
+let angular = require('angular');
+
+module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
+  require('angular-ui-router'),
+  require('angular-ui-bootstrap'),
+  INSTANCE_WRITE_SERVICE,
+  INSTANCE_READ_SERVICE,
+  CONFIRMATION_MODAL_SERVICE,
+  RECENT_HISTORY_SERVICE,
+  require('core/utils/selectOnDblClick.directive.js'),
+  CLOUD_PROVIDER_REGISTRY,
+])
+  .controller('dcosInstanceDetailsController', function ($scope, $state, $uibModal,
+                                                               instanceWriter, confirmationModalService, recentHistoryService,
+                                                               cloudProviderRegistry, instanceReader, instance, app, dcosProxyUiService, $q) {
+    // needed for standalone instances
+    $scope.detailsTemplateUrl = cloudProviderRegistry.getValue('dcos', 'instance.detailsTemplateUrl');
+
+    $scope.state = {
+      loading: true,
+      // TODO not sure what standalone means.
+      //standalone: app.isStandalone,
+    };
+
+    this.uiLink = function uiLink() {
+      // TODO this won't work, introduce
+      return dcosProxyUiService.buildLink($scope.instance.account, 'services', $scope.instance.region, $scope.instance.serverGroupName, $scope.instance.name);
+    };
+
+    this.showJson = function showJson() {
+      $scope.userDataModalTitle = 'Task JSON';
+      $scope.userData = $scope.instance.json;
+      $uibModal.open({
+        templateUrl: require('core/serverGroup/details/userData.html'),
+        controller: 'CloseableModalCtrl',
+        scope: $scope
+      });
+    };
+
+    function retrieveInstance() {
+      // TODO edit this
+      var extraData = {};
+      var instanceSummary, loadBalancers, account, region;
+      app.serverGroups.data.some(function (serverGroup) {
+        return serverGroup.instances.some(function (possibleInstance) {
+          if (possibleInstance.id === instance.instanceId) {
+            instanceSummary = possibleInstance;
+            loadBalancers = serverGroup.loadBalancers;
+            account = serverGroup.account;
+            region = serverGroup.region;
+            extraData.serverGroup = serverGroup.name;
+            return true;
+          }
+        });
+      });
+
+      if (instanceSummary && account && region) {
+        extraData.account = account;
+        extraData.region = region;
+        recentHistoryService.addExtraDataToLatest('instances', extraData);
+        return instanceReader.getInstanceDetails(account, region, instance.instanceId).then(function(details) {
+          $scope.state.loading = false;
+          //extractHealthMetrics(instanceSummary, details);
+          $scope.instance = _.defaults(details, instanceSummary);
+          $scope.instance.account = account;
+          $scope.instance.serverGroupName = extraData.serverGroup;
+          $scope.instance.region = region;
+          $scope.instance.loadBalancers = loadBalancers;
+          //$scope.baseIpAddress = $scope.instance.placement.containerIp || $scope.instance.placement.host;
+          //$scope.instance.externalIpAddress = $scope.instance.placement.host;
+          // if (overrides.instanceDetailsLoaded) {
+          //   overrides.instanceDetailsLoaded();
+          // }
+        },
+          autoClose
+        );
+      }
+
+      if (!instanceSummary) {
+        autoClose();
+      }
+      return $q.when(null);
+    }
+
+    function autoClose() {
+      if ($scope.$$destroyed) {
+        return;
+      }
+      $state.params.allowModalToStayOpen = true;
+      $state.go('^', null, {location: 'replace'});
+    }
+
+    this.terminateInstance = function terminateInstance() {
+      var instance = $scope.instance;
+
+      var taskMonitor = {
+        application: app,
+        title: 'Terminating ' + instance.instanceId,
+        onTaskComplete: function() {
+          if ($state.includes('**.instanceDetails', {instanceId: instance.instanceId})) {
+            $state.go('^');
+          }
+        }
+      };
+
+      var submitMethod = function () {
+        let params = {cloudProvider: 'dcos'};
+
+        if (instance.serverGroup) {
+          params.managedInstanceGroupName = instance.serverGroup;
+        }
+
+        params.namespace = instance.namespace;
+        instance.placement = {};
+
+        return instanceWriter.terminateInstance(instance, app, params);
+      };
+
+      confirmationModalService.confirm({
+        header: 'Really terminate ' + instance.instanceId + '?',
+        buttonText: 'Terminate ' + instance.instanceId,
+        account: instance.account,
+        provider: 'dcos',
+        taskMonitorConfig: taskMonitor,
+        submitMethod: submitMethod
+      });
+    };
+
+    this.registerInstanceWithLoadBalancer = function registerInstanceWithLoadBalancer() {
+      var instance = $scope.instance;
+      var loadBalancerNames = instance.loadBalancers.join(' and ');
+
+      var taskMonitor = {
+        application: app,
+        title: 'Registering ' + instance.name + ' with ' + loadBalancerNames
+      };
+
+      var submitMethod = function () {
+        // TODO Don't think we need this.
+        return instanceWriter.registerInstanceWithLoadBalancer(instance, app, { interestingHealthProviderNames: ['Dcos'] } );
+      };
+
+      confirmationModalService.confirm({
+        header: 'Really register ' + instance.name + ' with ' + loadBalancerNames + '?',
+        buttonText: 'Register ' + instance.name,
+        account: instance.account,
+        taskMonitorConfig: taskMonitor,
+        submitMethod: submitMethod
+      });
+    };
+
+    this.deregisterInstanceFromLoadBalancer = function deregisterInstanceFromLoadBalancer() {
+      var instance = $scope.instance;
+      var loadBalancerNames = instance.loadBalancers.join(' and ');
+
+      var taskMonitor = {
+        application: app,
+        title: 'Deregistering ' + instance.name + ' from ' + loadBalancerNames
+      };
+
+      var submitMethod = function () {
+        return instanceWriter.deregisterInstanceFromLoadBalancer(instance, app, { interestingHealthProviderNames: ['Dcos'] } );
+      };
+
+      confirmationModalService.confirm({
+        header: 'Really deregister ' + instance.name + ' from ' + loadBalancerNames + '?',
+        buttonText: 'Deregister ' + instance.name,
+        provider: 'dcos',
+        account: instance.account,
+        taskMonitorConfig: taskMonitor,
+        submitMethod: submitMethod
+      });
+    };
+
+    this.canRegisterWithLoadBalancer = function() {
+      // var instance = $scope.instance;
+      // if (!instance.loadBalancers || !instance.loadBalancers.length) {
+      //   return false;
+      // }
+      // return instance.health.some(function(health) {
+      //   return health.state === 'OutOfService';
+      // });
+
+      return false;
+    };
+
+    this.canDeregisterFromLoadBalancer = function() {
+      return false;
+      // var instance = $scope.instance;
+      // if (!instance.loadBalancers || !instance.loadBalancers.length) {
+      //   return false;
+      // }
+      // return instance.healthState !== 'OutOfService';
+    };
+
+    this.hasHealthState = function hasHealthState(healthProviderType, state) {
+      var instance = $scope.instance;
+      return (instance.health.some(function (health) {
+        return health.type === healthProviderType && health.state === state;
+      })
+      );
+    };
+
+    let initialize = app.isStandalone ?
+      retrieveInstance() :
+      $q.all([app.serverGroups.ready(), app.loadBalancers.ready()]).then(retrieveInstance);
+
+    initialize.then(() => {
+      // Two things to look out for here:
+      //  1. If the retrieveInstance call completes *after* the user has navigated away from the view, there
+      //     is no point in subscribing to the refresh
+      //  2. If this is a standalone instance, there is no application that will refresh
+      if (!$scope.$$destroyed && !app.isStandalone) {
+        app.serverGroups.onRefresh($scope, retrieveInstance);
+      }
+    });
+
+    $scope.account = instance.account;
+  }
+);

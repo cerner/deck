@@ -7,11 +7,11 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [
 ])
   .factory('dcosProxyUiService', function(settings) {
     //TODO Could we use this to proxy to DCOS itself?
-    let apiPrefix = 'api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard/#';
+    let apiPrefix = '#';
 
     function getHost(accountName) {
-      let host = settings.providers.kubernetes.defaults.proxy;
-      let account = settings.providers.kubernetes[accountName];
+      let host = settings.providers.dcos.defaults.proxy;
+      let account = settings.providers.dcos[accountName];
 
       if (account && account.proxy) {
         host = account.proxy;
@@ -24,9 +24,15 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [
       return host;
     }
 
-    function buildLink(accountName, kind, namespace, serverGroupName) {
+    function buildLink(accountName, kind, group, name, taskName = null) {
       let host = getHost(accountName);
-      return host + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + namespace + '/' + serverGroupName;
+      // TODO group may not be prefixed with / or could also be postfixed with /. Need to figure this out.
+      let link = host + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + accountName + '/' + (group == 'root' ? '' : group + '/') + name);
+      if (taskName) {
+        link = link + '/tasks/' + taskName;
+      }
+
+      return link;
     }
 
     return {

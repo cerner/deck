@@ -8,21 +8,21 @@ module.exports = angular
 
     function destroyServerGroup(serverGroup) {
       return {
-        namespace: serverGroup.namespace,
+        region: serverGroup.region,
         interestingHealthProviderNames: ['DcosService']
       };
     }
 
     function enableServerGroup(serverGroup) {
       return {
-          namespace: serverGroup.region,
+          region: serverGroup.region,
           interestingHealthProviderNames: ['DcosService']
       };
     }
 
     function disableServerGroup(serverGroup) {
       return {
-          namespace: serverGroup.region,
+          region: serverGroup.region,
           interestingHealthProviderNames: ['DcosService']
       };
     }

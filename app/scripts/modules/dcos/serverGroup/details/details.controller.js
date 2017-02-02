@@ -11,7 +11,7 @@ import {RUNNING_TASKS_DETAILS_COMPONENT} from 'core/serverGroup/details/runningT
 
 module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller', [
   require('angular-ui-router'),
-  //require('../configure/configure.dcos.module.js'),
+  require('../configure/configure.dcos.module.js'),
   CONFIRMATION_MODAL_SERVICE,
   SERVER_GROUP_WARNING_MESSAGE_SERVICE,
   SERVER_GROUP_READER,
@@ -23,7 +23,7 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
   .controller('dcosServerGroupDetailsController', function ($scope, $state, app, serverGroup,
                                                                   serverGroupReader, $uibModal, serverGroupWriter,
                                                                   serverGroupWarningMessageService,
-                                                                  /*dcosServerGroupCommandBuilder,*/ dcosServerGroupParamsMixin,
+                                                                  dcosServerGroupCommandBuilder, dcosServerGroupParamsMixin,
                                                                   confirmationModalService, dcosProxyUiService) {
     let application = app;
 
@@ -116,33 +116,38 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
         title: 'Destroying ' + serverGroup.name,
       };
 
-      var submitMethod = (params) => serverGroupWriter.destroyServerGroup(
-          serverGroup,
-          application,
-          angular.extend(params, dcosServerGroupParamsMixin.destroyServerGroup(serverGroup, application))
-      );
+      var submitMethod = function () {
+        return serverGroupWriter.destroyServerGroup(serverGroup, application, {
+          cloudProvider: 'dcos',
+          serverGroupName: serverGroup.name,
+          region: serverGroup.region,
+        });
+      };
 
       var stateParams = {
         name: serverGroup.name,
         accountId: serverGroup.account,
-        namespace: serverGroup.namespace
+        region: serverGroup.region
       };
 
-      confirmationModalService.confirm({
+      var confirmationModalParams = {
         header: 'Really destroy ' + serverGroup.name + '?',
         buttonText: 'Destroy ' + serverGroup.name,
         provider: 'dcos',
         account: serverGroup.account,
         taskMonitorConfig: taskMonitor,
+        platformHealthOnlyShowOverride: app.attributes.platformHealthOnlyShowOverride,
+        platformHealthType: 'DCOS',
         submitMethod: submitMethod,
-        askForReason: true,
         body: this.getBodyTemplate(serverGroup, application),
-        onTaskComplete: () => {
+        onTaskComplete: function () {
           if ($state.includes('**.serverGroup', stateParams)) {
             $state.go('^');
           }
         },
-      });
+      };
+
+      confirmationModalService.confirm(confirmationModalParams);
     };
 
     this.getBodyTemplate = (serverGroup, application) => {

@@ -1,5 +1,5 @@
-<div class="details-panel">
-
+<div class="details-panel"
+     ng-class="{ disabled: serverGroup.isDisabled }">
   <div class="header" ng-if="state.loading">
       <div class="close-button">
           <a class="btn btn-link" ui-sref="^">
@@ -31,8 +31,13 @@
             Server Group Actions <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-            <li><a href ng-click="controller.resizeServerGroup()">Resize</a></li>
-            <li><a href ng-click="controller.destroyServerGroup()">Destroy</a></li>
+            <li><a href ng-if="!ctrl.serverGroup.isDisabled" ng-click="ctrl.rollbackServerGroup()">Rollback</a></li>
+            <li role="presentation" class="divider" ng-if="!ctrl.serverGroup.isDisabled"></li>
+            <li><a href ng-click="ctrl.resizeServerGroup()">Resize</a></li>
+            <li><a href ng-if="!serverGroup.isDisabled" ng-click="ctrl.disableServerGroup()">Disable</a></li>
+            <li><a href ng-if="serverGroup.isDisabled && serverGroup.loadBalancers.length" ng-click="ctrl.enableServerGroup()">Enable</a></li>
+            <li><a href ng-click="ctrl.destroyServerGroup()">Destroy</a></li>
+            <li><a href ng-click="ctrl.cloneServerGroup(serverGroup)">Clone</a></li>
           </ul>
         </div>
         <div class="clearfix"></div>
@@ -59,19 +64,29 @@
         <dd><a href={{ctrl.uiLink()}} target="_blank">{{serverGroup.name}}</a></dd>
       </dl>
     </collapsible-section>
-      <collapsible-section heading="Capacity" expanded="true">
-          <dl class="dl-horizontal dl-flex">
-              <dt>Current</dt>
-              <dd>{{serverGroup.instances}}</dd>
-          </dl>
-          <div>
-              <a href ng-click="controller.resizeServerGroup()">Resize Server Group</a>
-          </div>
-      </collapsible-section>
+     <!--TODO serverGroup.instances is required by spinnaker and is the instance (task) information. We'll have to put # of instances under capacity or something -->
+    <!--<collapsible-section heading="Capacity" expanded="true">
+        <dl class="dl-horizontal dl-flex">
+           TODO serverGroup.instances
+            <dt>Current</dt>
+            <dd>{{serverGroup.instances}}</dd>
+        </dl>
+        <div>
+            <a href ng-click="controller.resizeServerGroup()">Resize Server Group</a>
+        </div>
+    </collapsible-section>-->
+    <collapsible-section heading="Status" expanded="true">
+      <dl class="dl-horizontal dl-flex" ng-if="serverGroup">
+        <dt>Tasks</dt>
+        <dd>
+          <health-counts container="serverGroup.instanceCounts" class="pull-left"></health-counts>
+        </dd>
+      </dl>
+    </collapsible-section>
     <collapsible-section heading="Resources" expanded="true">
       <dl class="dl-horizontal dl-flex" ng-if="serverGroup">
         <dt>CPU</dt>
-        <dd>{{serverGroup.cpus}}</dd>
+        <dd>{{serverGroup.cpu}}</dd>
         <dt>GPU</dt>
         <dd>{{serverGroup.gpus}}</dd>
         <dt>Memory</dt>

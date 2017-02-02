@@ -31,13 +31,6 @@ window.spinnakerSettings = {
         region: 'westus'
       },
     },
-    dcos: {
-      defaults: {
-        // TODO Reset this - temporarily set to this so testing is easier without having to link the settings.
-        account: 'dcos-dev',
-        proxy: 'http://master001.norbert-dev.hax'
-      },
-    },
     aws: {
       defaults: {
         account: 'test',

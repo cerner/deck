@@ -25,7 +25,7 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
   require('core/utils/selectOnDblClick.directive.js'),
 ])
   .controller('dcosServerGroupDetailsController', function ($scope, $state, $templateCache, $interpolate, app, serverGroup,
-                                                       dcosCommandBuilder, serverGroupReader, $uibModal, confirmationModalService, serverGroupWriter,
+                                                       dcosServerGroupCommandBuilder, serverGroupReader, $uibModal, confirmationModalService, serverGroupWriter,
                                                        serverGroupWarningMessageService, accountService) {
 
     let application = app;

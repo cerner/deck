@@ -1,0 +1,43 @@
+<form name="optional" class="container-fluid form-horizontal" novalidate>
+    <div class="form-group">
+        <div class="col-md-3 sm-label-right">
+            Executor
+            <help-field key="dcos.serverGroup.executor"></help-field>
+        </div>
+        <div class="col-md-7"><input type="text"
+                                     class="form-control input-sm"
+                                     name="executor"
+                                     ng-model="command.executor"/></div>
+        <div class="col-md-3 sm-label-right">
+            URIs
+            <help-field key="dcos.serverGroup.uris"></help-field>
+        </div>
+        <div class="col-md-7"><input type="text"
+                                     class="form-control input-sm"
+                                     name="uris"
+                                     ng-model="command.uris"/></div>
+        <div class="col-md-3 sm-label-right">
+            Constaints
+            <help-field key="dcos.serverGroup.constraints"></help-field>
+        </div>
+        <div class="col-md-7"><input type="text"
+                                     class="form-control input-sm"
+                                     name="constraints"
+                                     ng-model="command.constraints"/></div>
+        <div class="col-md-3 sm-label-right">
+            Accepted Resource Roles
+            <help-field key="dcos.serverGroup.acceptedResourceRoles"></help-field>
+        </div>
+        <div class="col-md-7"><input type="text"
+                                     class="form-control input-sm"
+                                     name="acceptedResourceRoles"
+                                     ng-model="command.acceptedResourceRoles"/></div>
+        <div class="col-md-3 sm-label-right">
+            User
+        </div>
+        <div class="col-md-7"><input type="text"
+                                     class="form-control input-sm"
+                                     name="user"
+                                     ng-model="command.dcosUser"/></div>
+    </div>
+</form>

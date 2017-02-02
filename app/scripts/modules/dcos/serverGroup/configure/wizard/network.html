@@ -1,0 +1,93 @@
+<form class="container-fluid form-horizontal" name="form"
+      ng-controller="dcosServerGroupNetworkController as networkController" novalidate>
+    <h5>
+        Configure the networking for your service. We will automatically generate a Service Address to connect to for each of your load balanced endpoints.
+        <a href="https://docs.mesosphere.com/1.8/usage/service-discovery/load-balancing-vips/virtual-ip-addresses/">
+            Read more about load balancing.
+        </a>
+    </h5>
+    <div class="form-group">
+        <div class="col-md-3 sm-label-right">
+            Network Type
+        </div>
+        <ui-select name="typeSelect" ng-model="command.networkType" on-select="networkController.changeNetworkType()" search-enabled="false" class="form-control input-sm">
+            <ui-select-match>{{$select.selected.name}}</ui-select-match>
+            <ui-select-choices
+                    repeat="type in command.networkTypes">
+                <div ng-bind-html="type.name"></div>
+            </ui-select-choices>
+        </ui-select>
+
+        <table class="table table-condensed packed">
+            <thead>
+            <tr>
+                <th style="width: 100%">Service Endpoints</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="serviceEndpoint in command.serviceEndpoints">
+                <td>
+                    <div class="col-md-3 sm-label-right">
+                        Name
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control input-sm" name="name" ng-model="serviceEndpoint.name"/>
+                    </div>
+
+                    <div ng-show="serviceEndpoint.networkType === command.networkTypes[0]" class="col-md-3 sm-label-right">
+                        LB Port
+                    </div>
+                    <div ng-show="serviceEndpoint.networkType !== command.networkTypes[0]" class="col-md-3 sm-label-right">
+                        Container Port
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control input-sm" name="port" ng-model="serviceEndpoint.port" min="0"/>
+                    </div>
+
+                    <div class="col-md-3 sm-label-right">
+                        Load Balanced
+                    </div>
+                    <div class="col-md-2">
+                        <input type="checkbox" name="loadBalanced" ng-model="serviceEndpoint.loadBalanced"/>
+                    </div>
+
+                    <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-3 sm-label-right">
+                        Expose endpoints on host network
+                    </div>
+                    <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-2">
+                        <input type="checkbox" name="exposeToHost" ng-model="serviceEndpoint.exposeToHost"/>
+                    </div>
+
+                    <div class="col-md-3 sm-label-right">
+                        Protocol
+                    </div>
+                    <div class="col-md-2">
+                        <ui-select name="protocolSelect" ng-model="serviceEndpoint.protocol" search-enabled="false" class="form-control input-sm">
+                            <ui-select-match>{{$select.selected}}</ui-select-match>
+                            <ui-select-choices
+                                    repeat="protocol in command.serviceEndpointProtocols">
+                                <div ng-bind-html="protocol"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <a class="btn btn-link sm-label" ng-click="networkController.removeServiceEndpoint($index)">
+                            <span class="glyphicon glyphicon-trash"></span>Remove Service Endpoint
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="1">
+                    <button class="add-new col-md-12" ng-click="networkController.addServiceEndpoint()">
+                        <span class="glyphicon glyphicon-plus-sign"></span> Add Service Endpoint
+                    </button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</form>

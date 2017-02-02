@@ -1,0 +1,109 @@
+<form class="container-fluid form-horizontal" name="form"
+      ng-controller="dcosServerGroupHealthChecksController as healthCheckController" novalidate>
+    <div class="form-group">
+        <table class="table table-condensed packed">
+            <thead>
+                <tr>
+                    <th style="width: 100%">Health Checks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="healthCheck in command.healthChecks">
+                    <td>
+                        <div class="col-md-3 sm-label-right">
+                            Protocol
+                        </div>
+                        <ui-select name="protocolSelect" ng-model="healthCheck.protocol" search-enabled="false" class="form-control input-sm">
+                            <ui-select-match>{{$select.selected}}</ui-select-match>
+                            <ui-select-choices
+                                    repeat="protocol in command.healthCheckProtocols">
+                                <div ng-bind-html="protocol"></div>
+                            </ui-select-choices>
+                        </ui-select>
+
+                        <div ng-show="healthCheck.protocol === command.healthCheckProtocols[0]" class="col-md-3 sm-label-right">
+                            Path
+                        </div>
+                        <div ng-show="healthCheck.protocol === command.healthCheckProtocols[0]" class="col-md-7"><input type="text"
+                                                     class="form-control input-sm"
+                                                     name="path"
+                                                     ng-model="healthCheck.path"/></div>
+
+                        <div ng-show="healthCheck.protocol === command.healthCheckProtocols[1]" class="col-md-3 sm-label-right">
+                            Command
+                        </div>
+                        <div ng-show="healthCheck.protocol === command.healthCheckProtocols[1]" class="col-md-7"><input type="text"
+                                                     class="form-control input-sm"
+                                                     name="command"
+                                                     ng-model="healthCheck.command"/></div>
+
+                        <div class="col-md-3 sm-label-right">
+                            Grace Period
+                            <help-field key="dcos.serverGroup.healthCheck.gracePeriodSeconds"></help-field>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control input-sm" name="gracePeriodSeconds" ng-model="healthCheck.gracePeriodSeconds" min="0"/>
+                        </div>
+
+                        <div class="col-md-3 sm-label-right">
+                            Interval
+                            <help-field key="dcos.serverGroup.healthCheck.intervalSeconds"></help-field>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control input-sm" name="intervalSeconds" ng-model="healthCheck.intervalSeconds" min="0"/>
+                        </div>
+
+                        <div class="col-md-3 sm-label-right">
+                            Timeout
+                            <help-field key="dcos.serverGroup.healthCheck.timeoutSeconds"></help-field>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control input-sm" name="timeoutSeconds" ng-model="healthCheck.timeoutSeconds" min="0"/>
+                        </div>
+
+                        <div class="col-md-3 sm-label-right">
+                            Maximum Consecutive Failures
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control input-sm" name="maxConsecutiveFailures" ng-model="healthCheck.maxConsecutiveFailures" min="0"/>
+                        </div>
+
+                        <div class="col-md-3 sm-label-right">
+                            Port Type
+                        </div>
+                        <ui-select name="portTypeSelect" ng-model="healthCheck.portType" search-enabled="false" class="form-control input-sm">
+                            <ui-select-match>{{$select.selected}}</ui-select-match>
+                            <ui-select-choices
+                                    repeat="portType in command.healthCheckPortTypes">
+                                <div ng-bind-html="portType"></div>
+                            </ui-select-choices>
+                        </ui-select>
+
+                        <div ng-show="healthCheck.portType === command.healthCheckPortTypes[0]" class="col-md-3 sm-label-right">
+                            Port Index
+                        </div>
+                        <div ng-show="healthCheck.portType === command.healthCheckPortTypes[1]" class="col-md-3 sm-label-right">
+                            Port Number
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control input-sm" name="port" ng-model="healthCheck.port" min="0"/>
+                        </div>
+
+                        <a class="btn btn-link sm-label" ng-click="healthCheckController.removeHealthCheck($index)">
+                            <span class="glyphicon glyphicon-trash"></span>Remove Health Check
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="1">
+                        <button class="add-new col-md-12" ng-click="healthCheckController.addHealthCheck()">
+                            <span class="glyphicon glyphicon-plus-sign"></span> Add Health Check
+                        </button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</form>

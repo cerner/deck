@@ -1,50 +1,36 @@
 'use strict';
 
-// TODO copied from kubernetes, haven't changed it yet
-
 let angular = require('angular');
 
 import {SERVER_GROUP_WRITER} from 'core/serverGroup/serverGroupWriter.service';
 import {TASK_MONITOR_BUILDER} from 'core/task/monitor/taskMonitor.builder';
 
-module.exports = angular.module('spinnaker.kubernetes.serverGroup.details.resize.controller', [
-  require('core/application/modal/platformHealthOverride.directive.js'),
-  require('core/task/modal/reason.directive.js'),
+module.exports = angular.module('spinnaker.dcos.serverGroup.details.resize.controller', [
   SERVER_GROUP_WRITER,
   TASK_MONITOR_BUILDER,
 ])
-  .controller('kubernetesResizeServerGroupController', function($scope, $uibModalInstance, serverGroupWriter, taskMonitorBuilder,
-                                                                application, serverGroup, kubernetesAutoscalerWriter) {
+  .controller('dcosResizeServerGroupController', function($scope, $uibModalInstance, serverGroupWriter, taskMonitorBuilder,
+                                                     application, serverGroup) {
     $scope.serverGroup = serverGroup;
-    $scope.currentSize = { desired: serverGroup.replicas };
-
-    $scope.command = {
-      capacity: {
-        desired: $scope.currentSize.desired,
-      },
+    $scope.currentSize = {
+      instances: serverGroup.instances,
+      newSize: null
     };
-
-    if ($scope.serverGroup.autoscalerStatus) {
-      $scope.command.capacity.min = $scope.serverGroup.deployDescription.capacity.min;
-      $scope.command.capacity.max = $scope.serverGroup.deployDescription.capacity.max;
-      $scope.command.scalingPolicy = { cpuUtilization: { target: null, }, };
-    }
 
     $scope.verification = {};
 
-    if (application && application.attributes) {
-      if (application.attributes.platformHealthOnly) {
-        $scope.command.interestingHealthProviderNames = ['Kubernetes'];
-      }
+    $scope.command = angular.copy($scope.currentSize);
 
+    if (application && application.attributes) {
       $scope.command.platformHealthOnlyShowOverride = application.attributes.platformHealthOnlyShowOverride;
     }
 
     this.isValid = function () {
       var command = $scope.command;
-      return $scope.verification.verified
-        && command.capacity !== null
-        && command.capacity.desired !== null;
+      if (!$scope.verification.verified) {
+        return false;
+      }
+      return command.newSize !== null;
     };
 
     $scope.taskMonitor = taskMonitorBuilder.buildTaskMonitor({
@@ -57,24 +43,16 @@ module.exports = angular.module('spinnaker.kubernetes.serverGroup.details.resize
       if (!this.isValid()) {
         return;
       }
-      var capacity = $scope.command.capacity;
+      var instances = $scope.command.newSize;
 
       var submitMethod = function() {
-        var payload = {
-          capacity: capacity,
+        return serverGroupWriter.resizeServerGroup(serverGroup, application, {
           serverGroupName: serverGroup.name,
           credentials: serverGroup.account,
           account: serverGroup.account,
-          namespace: serverGroup.region,
           region: serverGroup.region,
-          interestingHealthProviderNames: ['KubernetesPod'],
-          reason: $scope.command.reason,
-        };
-        if (serverGroup.autoscalerStatus) {
-          return kubernetesAutoscalerWriter.upsertAutoscaler(serverGroup, application, payload);
-        } else {
-          return serverGroupWriter.resizeServerGroup(serverGroup, application, payload);
-        }
+          instances: instances,
+        });
       };
 
       $scope.taskMonitor.submit(submitMethod);

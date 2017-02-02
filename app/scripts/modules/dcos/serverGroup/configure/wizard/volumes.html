@@ -1,0 +1,138 @@
+<form class="container-fluid form-horizontal" name="form"
+      ng-controller="dcosServerGroupVolumesController as volumeController" novalidate>
+    <div class="form-group">
+        <table class="table table-condensed packed">
+            <thead>
+            <tr>
+                <th style="width: 100%">Persistent Local Volumes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="volume in command.persistentVolumes">
+                <td>
+                    <div class="col-md-3 sm-label-right">
+                        Size (MiB)
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control input-sm" name="persistentSize" ng-model="volume.persistent.size" min="0"/>
+                    </div>
+
+                    <div class="col-md-3 sm-label-right">
+                        Container Path
+                    </div>
+                    <div class="col-md-7"><input type="text"
+                                                 class="form-control input-sm"
+                                                 name="containerPath"
+                                                 ng-model="volume.containerPath"/></div>
+
+                    <a class="btn btn-link sm-label" ng-click="volumeController.removePersistentVolume($index)">
+                        <span class="glyphicon glyphicon-trash"></span>Remove Persistent Volume
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="1">
+                    <button class="add-new col-md-12" ng-click="volumeController.addPersistentVolume()">
+                        <span class="glyphicon glyphicon-plus-sign"></span> Add Persistent Volume
+                    </button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <table ng-show="command.docker" class="table table-condensed packed">
+            <thead>
+            <tr>
+                <th style="width: 100%">Docker Container Volumes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="volume in command.dockerVolumes">
+                <td>
+                    <div class="col-md-3 sm-label-right">
+                        Container Path
+                    </div>
+                    <div class="col-md-7"><input type="text"
+                                                 class="form-control input-sm"
+                                                 name="containerPath"
+                                                 ng-model="volume.containerPath"/></div>
+
+                    <div class="col-md-3 sm-label-right">
+                        Host Path
+                    </div>
+                    <div class="col-md-7"><input type="text"
+                                                 class="form-control input-sm"
+                                                 name="hostPath"
+                                                 ng-model="volume.hostPath"/></div>
+
+                    <div class="col-md-3 sm-label-right">
+                        Mode
+                    </div>
+                    <ui-select name="volumeModeSelect" ng-model="volume.mode" search-enabled="false" class="form-control input-sm">
+                        <ui-select-match>{{$select.selected.description}}</ui-select-match>
+                        <ui-select-choices
+                                repeat="mode in command.volumeModes">
+                            <div ng-bind-html="mode.description"></div>
+                        </ui-select-choices>
+                    </ui-select>
+
+                    <a class="btn btn-link sm-label" ng-click="volumeController.removeDockerVolume($index)">
+                        <span class="glyphicon glyphicon-trash"></span>Remove Docker Volume
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="1">
+                    <button class="add-new col-md-12" ng-click="volumeController.addDockerVolume()">
+                        <span class="glyphicon glyphicon-plus-sign"></span> Add Docker Volume
+                    </button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <table class="table table-condensed packed">
+            <thead>
+            <tr>
+                <th style="width: 100%">External Volumes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="volume in command.externalVolumes">
+                <td>
+                    <div class="col-md-3 sm-label-right">
+                        Name
+                    </div>
+                    <div class="col-md-7"><input type="text"
+                                                 class="form-control input-sm"
+                                                 name="externalName"
+                                                 ng-model="volume.external.name"/></div>
+
+                    <div class="col-md-3 sm-label-right">
+                        Container Path
+                    </div>
+                    <div class="col-md-7"><input type="text"
+                                                 class="form-control input-sm"
+                                                 name="containerPath"
+                                                 ng-model="volume.containerPath"/></div>
+
+                    <a class="btn btn-link sm-label" ng-click="volumeController.removeExternalVolume($index)">
+                        <span class="glyphicon glyphicon-trash"></span>Remove External Volume
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="1">
+                    <button class="add-new col-md-12" ng-click="volumeController.addExternalVolume()">
+                        <span class="glyphicon glyphicon-plus-sign"></span> Add External Volume
+                    </button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</form>

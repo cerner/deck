@@ -64,17 +64,15 @@
         <dd><a href={{ctrl.uiLink()}} target="_blank">{{serverGroup.name}}</a></dd>
       </dl>
     </collapsible-section>
-     <!--TODO serverGroup.instances is required by spinnaker and is the instance (task) information. We'll have to put # of instances under capacity or something -->
-    <!--<collapsible-section heading="Capacity" expanded="true">
+    <collapsible-section heading="Capacity" expanded="true">
         <dl class="dl-horizontal dl-flex">
-           TODO serverGroup.instances
             <dt>Current</dt>
-            <dd>{{serverGroup.instances}}</dd>
+            <dd>{{serverGroup.capacity}}</dd>
         </dl>
         <div>
             <a href ng-click="controller.resizeServerGroup()">Resize Server Group</a>
         </div>
-    </collapsible-section>-->
+    </collapsible-section>
     <collapsible-section heading="Status" expanded="true">
       <dl class="dl-horizontal dl-flex" ng-if="serverGroup">
         <dt>Tasks</dt>

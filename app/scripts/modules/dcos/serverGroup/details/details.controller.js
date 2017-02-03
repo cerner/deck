@@ -219,21 +219,6 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
       confirmationModalService.confirm(confirmationModalParams);
     };
 
-    this.rollbackServerGroup = function rollbackServerGroup() {
-      $uibModal.open({
-        templateUrl: require('./rollback/rollback.html'),
-        controller: 'dcosRollbackServerGroupController as ctrl',
-        resolve: {
-          serverGroup: function() { return $scope.serverGroup; },
-          disabledServerGroups: function() {
-            var cluster = _.find(app.clusters, {name: $scope.serverGroup.cluster, account: $scope.serverGroup.account});
-            return _.filter(cluster.serverGroups, {isDisabled: true, region: $scope.serverGroup.namespace});
-          },
-          application: function() { return app; }
-        }
-      });
-    };
-
     this.resizeServerGroup = function resizeServerGroup() {
       $uibModal.open({
         templateUrl: require('./resize/resize.html'),

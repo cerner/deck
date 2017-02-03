@@ -2,7 +2,7 @@
 
 let angular = require('angular');
 
-module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChecks', [
+module.exports = angular.module('spinnaker.serverGroup.configure.dcos.network', [
   require('angular-ui-router'),
   require('angular-ui-bootstrap'),
 ])

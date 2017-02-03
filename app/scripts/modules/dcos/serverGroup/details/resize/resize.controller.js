@@ -13,7 +13,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroup.details.resize.contr
                                                      application, serverGroup) {
     $scope.serverGroup = serverGroup;
     $scope.currentSize = {
-      instances: serverGroup.instances,
+      oldSize: serverGroup.instances.length,
       newSize: null
     };
 
@@ -43,7 +43,8 @@ module.exports = angular.module('spinnaker.dcos.serverGroup.details.resize.contr
       if (!this.isValid()) {
         return;
       }
-      var instances = $scope.command.newSize;
+
+      var capacity = { min: $scope.command.newSize, max: $scope.command.newSize, desired: $scope.command.newSize };
 
       var submitMethod = function() {
         return serverGroupWriter.resizeServerGroup(serverGroup, application, {
@@ -51,7 +52,8 @@ module.exports = angular.module('spinnaker.dcos.serverGroup.details.resize.contr
           credentials: serverGroup.account,
           account: serverGroup.account,
           region: serverGroup.region,
-          instances: instances,
+          capacity: capacity,
+          instances: capacity.desired,
         });
       };
 

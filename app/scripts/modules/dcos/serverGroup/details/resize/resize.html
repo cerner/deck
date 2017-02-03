@@ -21,10 +21,10 @@
           <label>
             <input type="number"
                    class="form-control input-sm"
-                   ng-model="currentSize.instances"
+                   ng-model="currentSize.oldSize"
                    style="width: 60px"
                    readonly/>
-            instance<span ng-if="currentSize.instances > 0">s</span>
+            instances<span ng-if="currentSize.oldSize > 0">s</span>
           </label>
         </div>
       </div>
@@ -59,12 +59,12 @@
 
     <div class="modal-footer">
       <user-verification account="serverGroup.account" verification="verification"></user-verification>
-      <button type="submit" ng-click="controller.resize()" style="display:none"></button> <!-- Allows form submission via enter keypress-->
-      <button class="btn btn-default" ng-click="controller.cancel()">Cancel</button>
+      <button type="submit" ng-click="ctrl.resize()" style="display:none"></button> <!-- Allows form submission via enter keypress-->
+      <button class="btn btn-default" ng-click="ctrl.cancel()">Cancel</button>
       <button type="submit"
               class="btn btn-primary"
-              ng-click="controller.resize()"
-              ng-disabled="!controller.isValid()">
+              ng-click="ctrl.resize()"
+              ng-disabled="!ctrl.isValid()">
         Submit
       </button>
     </div>

@@ -14,9 +14,19 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.containerS
   .controller('dcosServerGroupContainerSettingsController', function($scope, $controller, $uibModalStack, $state,
                                                                        v2modalWizardService, dcosImageReader,
                                                                        dcosServerGroupConfigurationService) {
+    this.groupByRegistry = function (image) {
+      if (image) {
+        if (image.fromContext) {
+          return 'Find Image Result(s)';
+        } else if (image.fromTrigger) {
+          return 'Images from Trigger(s)';
+        } else {
+          return image.registry;
+        }
+      }
+    };
 
     function searchImages(q) {
-      $scope.command.backingData.mapped.images = [];
       return Observable.fromPromise(
         dcosServerGroupConfigurationService
           .configureCommand($scope.application, $scope.command, q)

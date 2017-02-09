@@ -5,12 +5,13 @@
         </div>
         <div class="col-md-9">
             <ui-select name="imageSelect" ng-model="command.docker.image" class="form-control input-sm" required>
-                <ui-select-match placeholder="Please type your search...">{{$select.selected.imageId}}</ui-select-match>
+                <ui-select-match placeholder="Please type your search...">{{$select.search.imageId}}</ui-select-match>
                 <ui-select-choices
                         repeat="image in command.backingData.mapped.images"
+                        group-by="containerSettingsController.groupByRegistry"
                         refresh-delay="0"
                         refresh="containerSettingsController.searchImages($select.search)">
-                    <div ng-bind-html="image.imageId | highlight: $select.search"></div>
+                    <span ng-bind-html="image.imageId | highlight: $select.search"></span>
                 </ui-select-choices>
             </ui-select>
         </div>

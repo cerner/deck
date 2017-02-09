@@ -11,9 +11,78 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
 ])
   .factory('dcosServerGroupCommandBuilder', function (settings, $q,
                                                        accountService, namingService) {
-    function buildNewServerGroupCommand(application, defaults) {
-      defaults = defaults || {};
+    function reconcileUpstreamImages(image, upstreamImages) {
+        if (image.fromContext) {
+          let matchingImage = upstreamImages.find((otherImage) => image.stageId === otherImage.stageId);
 
+          if (matchingImage) {
+            image.cluster = matchingImage.cluster;
+            image.pattern = matchingImage.pattern;
+            image.repository = matchingImage.repository;
+            return image;
+          } else {
+            return null;
+          }
+        } else if (image.fromTrigger) {
+          let matchingImage = upstreamImages.find((otherImage) => {
+            return image.registry === otherImage.registry
+              && image.repository === otherImage.repository
+              && image.tag === otherImage.tag;
+          });
+
+          if (matchingImage) {
+            return image;
+          } else {
+            return null;
+          }
+        } else {
+          return image;
+        }
+    }
+
+    function findUpstreamImages(current, all, visited = {}) {
+      // This actually indicates a loop in the stage dependencies.
+      if (visited[current.refId]) {
+        return [];
+      } else {
+        visited[current.refId] = true;
+      }
+      let result = [];
+      if (current.type === 'findImage') {
+        result.push({
+          fromContext: true,
+          cluster: current.cluster,
+          pattern: current.imageNamePattern,
+          repository: current.name,
+          stageId: current.refId
+        });
+      }
+      current.requisiteStageRefIds.forEach(function(id) {
+        let next = all.find((stage) => stage.refId === id);
+        if (next) {
+          result = result.concat(findUpstreamImages(next, all, visited));
+        }
+      });
+
+      return result;
+    }
+
+    function findTriggerImages(triggers) {
+      return triggers.filter((trigger) => {
+        return trigger.type === 'docker';
+      }).map((trigger) => {
+        return {
+          fromTrigger: true,
+          repository: trigger.repository,
+          account: trigger.account,
+          organization: trigger.organization,
+          registry: trigger.registry,
+          tag: trigger.tag,
+        };
+      });
+    }
+
+    function buildNewServerGroupCommand(application, defaults = {}) {
       var defaultCredentials = defaults.account || settings.providers.dcos.defaults.account;
       var defaultRegion = defaults.region || settings.providers.dcos.defaults.region;
 
@@ -47,7 +116,6 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         secrets: null,
         taskKillGracePeriodSeconds: null,
         requirePorts: false,
-        container: null,
         docker: null,
         labels: {},
         healthChecks: [],
@@ -56,8 +124,6 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         externalVolumes: [],
         serviceEndpoints: [],
         viewState: {
-          useSimpleCapacity: true,
-          usePreferredZones: true,
           mode: defaults.mode || 'create',
         },
         cloudProvider: 'dcos',
@@ -67,62 +133,65 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
       return $q.when(command);
     }
 
-    // Only used to prepare view requiring template selecting
-    function buildNewServerGroupCommandForPipeline() {
+    function buildNewServerGroupCommandForPipeline(current, pipeline) {
+      let contextImages = findUpstreamImages(current, pipeline.stages) || [];
+      contextImages = contextImages.concat(findTriggerImages(pipeline.triggers));
+
       return $q.when({
         viewState: {
+          contextImages: contextImages,
+          mode: 'editPipeline',
           requiresTemplateSelection: true,
         }
       });
     }
 
-    function buildServerGroupCommandFromExisting(application, serverGroup, mode) {
+    function buildServerGroupCommandFromExisting(application, existing, mode) {
       mode = mode || 'clone';
 
-      var serverGroupName = namingService.parseServerGroupName(serverGroup.name);
+      var serverGroupName = namingService.parseServerGroupName(existing.name);
 
       var command = {
-        credentials: serverGroup.account,
-        account: serverGroup.account,
-        region: serverGroup.region,
-        application: application.name,
+        credentials: existing.account,
+        account: existing.account,
+        region: existing.region,
+        application: existing.name,
         stack: serverGroupName.stack,
         freeFormDetails: serverGroupName.freeFormDetails,
-        cmd: serverGroup.cmd,
-        args: serverGroup.args,
-        dcosUser: serverGroup.user,
-        env: serverGroup.env,
-        instances: serverGroup.instances,
-        cpus: serverGroup.cpus,
-        mem: serverGroup.mem,
-        disk: serverGroup.disk,
-        gpus: serverGroup.gpus,
-        constraints: serverGroup.constraints,
-        fetch: serverGroup.fetch,
-        storeUrls: serverGroup.storeUrls,
-        backoffSeconds: serverGroup.backoffSeconds,
-        backoffFactor: serverGroup.backoffFactor,
-        maxLaunchDelaySeconds: serverGroup.maxLaunchDelaySeconds,
-        container: serverGroup.container,
-        docker: serverGroup.docker,
-        healthChecks: serverGroup.healthChecks,
-        readinessChecks: serverGroup.readinessChecks,
-        dependencies: serverGroup.dependencies,
-        upgradeStrategy: serverGroup.upgradeStrategy,
-        labels: serverGroup.labels,
-        acceptedResourceRoles: serverGroup.acceptedResourceRoles,
-        residency: serverGroup.residency,
-        secrets: serverGroup.secrets,
-        taskKillGracePeriodSeconds: serverGroup.taskKillGracePeriodSeconds,
-        requirePorts: serverGroup.requirePorts,
-        serviceEndpoints: serverGroup.serviceEndpoints,
-        persistentVolumes: serverGroup.persistentVolumes,
-        dockerVolumes: serverGroup.dockerVolumes,
-        externalVolumes: serverGroup.externalVolumes,
+        cmd: existing.cmd,
+        args: existing.args,
+        dcosUser: existing.user,
+        env: existing.env,
+        instances: existing.instances,
+        cpus: existing.cpus,
+        mem: existing.mem,
+        disk: existing.disk,
+        gpus: existing.gpus,
+        constraints: existing.constraints,
+        fetch: existing.fetch,
+        storeUrls: existing.storeUrls,
+        backoffSeconds: existing.backoffSeconds,
+        backoffFactor: existing.backoffFactor,
+        maxLaunchDelaySeconds: existing.maxLaunchDelaySeconds,
+        container: existing.container,
+        docker: existing.docker,
+        healthChecks: existing.healthChecks,
+        readinessChecks: existing.readinessChecks,
+        dependencies: existing.dependencies,
+        upgradeStrategy: existing.upgradeStrategy,
+        labels: existing.labels,
+        acceptedResourceRoles: existing.acceptedResourceRoles,
+        residency: existing.residency,
+        secrets: existing.secrets,
+        taskKillGracePeriodSeconds: existing.taskKillGracePeriodSeconds,
+        requirePorts: existing.requirePorts,
+        serviceEndpoints: existing.serviceEndpoints,
+        persistentVolumes: existing.persistentVolumes,
+        dockerVolumes: existing.dockerVolumes,
+        externalVolumes: existing.externalVolumes,
         cloudProvider: 'dcos',
         selectedProvider: 'dcos',
         viewState: {
-          useSimpleCapacity: true,
           mode: mode,
         },
       };
@@ -130,18 +199,25 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
       return $q.when(command);
     }
 
-    function buildServerGroupCommandFromPipeline(application, originalCluster) {
-
+    function buildServerGroupCommandFromPipeline(application, originalCluster, current, pipeline) {
       var pipelineCluster = _.cloneDeep(originalCluster);
+
       var commandOptions = {account: pipelineCluster.account, region: pipelineCluster.region};
       var asyncLoader = $q.all({command: buildNewServerGroupCommand(application, commandOptions)});
+
 
       return asyncLoader.then(function (asyncData) {
         var command = asyncData.command;
 
+        let contextImages = findUpstreamImages(current, pipeline.stages) || [];
+        contextImages = contextImages.concat(findTriggerImages(pipeline.triggers));
+
+        if (command.docker && command.docker.image) {
+          command.docker.image = reconcileUpstreamImages(command.docker.image, contextImages);
+        }
+
         var viewState = {
-          disableImageSelection: true,
-          useSimpleCapacity: true,
+          contextImages: contextImages,
           mode: 'editPipeline',
           submitButtonLabel: 'Done',
         };

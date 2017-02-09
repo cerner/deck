@@ -34,7 +34,9 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
         accounts: accountService.listAccounts('dcos'),
         allImages: imagesPromise
       }).then(function(backingData) {
-        backingData.mapped = {};
+        backingData.mapped = {
+          images: []
+        };
 
         if (command.viewState.contextImages) {
           backingData.allImages = backingData.allImages.concat(command.viewState.contextImages);
@@ -42,6 +44,10 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
 
         if (backingData.allImages) {
           backingData.mapped.images = _.map(backingData.allImages, function(image) {
+            if (image.message !== undefined) {
+              return image;
+            }
+
             return {
               repository: image.repository,
               tag: image.tag,
@@ -103,6 +109,5 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
     return {
       configureCommand: configureCommand,
       configureAccount: configureAccount,
-      buildImageId: buildImageId,
     };
   });

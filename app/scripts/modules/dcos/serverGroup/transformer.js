@@ -22,9 +22,7 @@ module.exports = angular
         delete command.source;
       }
       command.cloudProvider = 'dcos';
-
-
-      command.account = command.credentials;
+      command.credentials = command.account;
 
       delete command.viewState;
       delete command.backingData;

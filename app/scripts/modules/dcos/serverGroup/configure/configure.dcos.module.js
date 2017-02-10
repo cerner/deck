@@ -9,6 +9,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos', [
   require('./wizard/basicSettings.controller.js'),
   require('./wizard/Clone.controller.js'),
   require('./wizard/containerSettings.controller.js'),
+  require('./wizard/environmentVariables.controller.js'),
   require('./wizard/healthChecks.controller.js'),
   require('./wizard/network.controller.js'),
   require('./wizard/templateSelection.controller.js'),

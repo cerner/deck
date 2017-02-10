@@ -97,7 +97,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         args: null,
         dcosUser: null,
         env: {},
-        instances: 1,
+        desiredCapacity: 1,
         cpus: 0.5,
         mem: 512,
         disk: 0.0,
@@ -146,7 +146,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
       });
     }
 
-    function buildServerGroupCommandFromExisting(application, existing, mode) {
+    function buildServerGroupCommandFromExisting(app, existing, mode) {
       mode = mode || 'clone';
 
       var serverGroupName = namingService.parseServerGroupName(existing.name);
@@ -154,15 +154,15 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
       var command = {
         credentials: existing.account,
         account: existing.account,
+        application: serverGroupName.application,
         region: existing.region,
-        application: existing.name,
         stack: serverGroupName.stack,
         freeFormDetails: serverGroupName.freeFormDetails,
         cmd: existing.cmd,
         args: existing.args,
         dcosUser: existing.user,
         env: existing.env,
-        instances: existing.instances,
+        desiredCapacity: existing.desiredCapacity,
         cpus: existing.cpus,
         mem: existing.mem,
         disk: existing.disk,

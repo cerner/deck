@@ -14,4 +14,4 @@ RUN docker/setup-apache2.sh && \
   rm -rf deck/* && \
   mv /docker/ /deck/
 
-CMD /opt/deck/docker/run-apache2.sh
+CMD /deck/docker/run-apache2.sh

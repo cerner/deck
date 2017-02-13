@@ -14,7 +14,8 @@
               Name
             </div>
             <div class="col-md-4">
-              <input type="text" class="form-control input-sm col-md-3" name="varName" ng-model="environmentVariable.name" />
+              <input type="text" class="form-control input-sm col-md-3" name="varName" ng-model="environmentVariable.name" validate-unique="environmentVariable.checkUnique"/>
+              <div class="error-message" ng-if="form.$error.validateUnique">Duplicate key</div>
             </div>
             <div class="col-md-1 sm-label-right">
               Value
@@ -30,7 +31,7 @@
                ng-click="environmentVariableController.updateSecret($index, environmentVariable.isSecret)"/>
             </div>
 
-            <a class="btn btn-link sm-label" ng-click="environmentVariableController.removeEnvironmentVariable($index)">
+            <a class="btn btn-link sm-label pull-right" ng-click="environmentVariableController.removeEnvironmentVariable($index)">
               <span class="glyphicon glyphicon-trash"></span>Remove Environment Variable
             </a>
           </td>

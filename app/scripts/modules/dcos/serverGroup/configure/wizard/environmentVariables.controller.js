@@ -56,4 +56,12 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
 
         delete $scope.command.secrets['secret' + index];
     };
+
+    this.synchronize = () => {
+      let allNames = $scope.command.env.map((item) => item.name);
+      $scope.command.env.forEach((item) => {
+        item.checkUnique = allNames.filter((name) => item.name !== name);
+      });
+    };
+    $scope.$watch(() => JSON.stringify($scope.command.env), this.synchronize);
   });

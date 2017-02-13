@@ -46,7 +46,7 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
       var newStateParams = {
         name: $scope.loadBalancer.name,
         accountId: $scope.loadBalancer.account,
-        region: 'global', //$scope.loadBalancer.region,
+        region: 'global',
         provider: 'dcos',
       };
       if (!$state.includes('**.loadBalancerDetails')) {

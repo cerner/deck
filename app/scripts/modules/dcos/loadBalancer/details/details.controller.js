@@ -26,7 +26,6 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.details.controller'
     function extractLoadBalancer() {
       $scope.loadBalancer = application.loadBalancers.data.filter(function (test) {
         return test.name === loadBalancer.name &&
-          //test.region === loadBalancer.region &&
           test.account === loadBalancer.accountId;
       })[0];
 
@@ -96,7 +95,6 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.details.controller'
         cloudProvider: 'dcos',
         loadBalancerName: $scope.loadBalancer.name,
         credentials: $scope.loadBalancer.account
-        //region: loadBalancer.region,
       };
 
       const submitMethod = () => loadBalancerWriter.deleteLoadBalancer(command, application);

@@ -27,7 +27,7 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [
     function buildLink(accountName, kind, region, name, taskName = null) {
       let host = getHost(accountName);
       // TODO group may not be prefixed with / or could also be postfixed with /. Need to figure this out.
-      let link = host + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + (region == 'global' ? accountName : region.replace("_", "/")) + '/' + name);
+      let link = host + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + (region == 'global' ? accountName : region.replace('_', '/')) + '/' + name);
       if (taskName) {
         link = link + '/tasks/' + taskName;
       }

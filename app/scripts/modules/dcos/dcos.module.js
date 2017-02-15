@@ -23,7 +23,6 @@ module.exports = angular.module('spinnaker.dcos', [
   require('./pipeline/stages/destroyAsg/dcosDestroyAsgStage.js'),
   require('./pipeline/stages/disableAsg/dcosDisableAsgStage.js'),
   require('./pipeline/stages/disableCluster/dcosDisableClusterStage.js'),
-  require('./pipeline/stages/enableAsg/dcosEnableAsgStage.js'),
   require('./pipeline/stages/findAmi/dcosFindAmiStage.js'),
   require('./pipeline/stages/resizeAsg/dcosResizeAsgStage.js'),
   require('./pipeline/stages/scaleDownCluster/dcosScaleDownClusterStage.js'),

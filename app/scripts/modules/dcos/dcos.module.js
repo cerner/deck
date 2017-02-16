@@ -28,7 +28,6 @@ module.exports = angular.module('spinnaker.dcos', [
   require('./pipeline/stages/scaleDownCluster/dcosScaleDownClusterStage.js'),
   require('./pipeline/stages/shrinkCluster/dcosShrinkClusterStage.js'),
   require('./proxy/ui.service.js'),
-//  require('./search/resultFormatter.js'),
   require('./serverGroup/configure/CommandBuilder.js'),
   require('./serverGroup/configure/configure.dcos.module.js'),
   require('./serverGroup/details/details.dcos.module.js'),
@@ -52,9 +51,6 @@ module.exports = angular.module('spinnaker.dcos', [
         createLoadBalancerTemplateUrl: require('./loadBalancer/configure/wizard/createWizard.html'),
         createLoadBalancerController: 'dcosUpsertLoadBalancerController',
       },
-//      search: {
-//        resultFormatter: 'dcosSearchResultFormatter',
-//      },
       image: {
         reader: 'dcosImageReader',
       },

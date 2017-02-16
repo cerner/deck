@@ -109,5 +109,6 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
     return {
       configureCommand: configureCommand,
       configureAccount: configureAccount,
+      buildImageId: buildImageId,
     };
   });

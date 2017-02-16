@@ -192,32 +192,32 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
       confirmationModalService.confirm(confirmationModalParams);
     };
 
-    this.enableServerGroup = function enableServerGroup() {
-      var serverGroup = $scope.serverGroup;
-
-      var taskMonitor = {
-        application: application,
-        title: 'Enabling ' + serverGroup.name,
-      };
-
-      var submitMethod = (params) => serverGroupWriter.enableServerGroup(
-          serverGroup,
-          application,
-          angular.extend(params, dcosServerGroupParamsMixin.enableServerGroup(serverGroup, application))
-      );
-
-      var confirmationModalParams = {
-        header: 'Really enable ' + serverGroup.name + '?',
-        buttonText: 'Enable ' + serverGroup.name,
-        provider: 'dcos',
-        account: serverGroup.account,
-        taskMonitorConfig: taskMonitor,
-        submitMethod: submitMethod,
-        askForReason: true,
-      };
-
-      confirmationModalService.confirm(confirmationModalParams);
-    };
+//    this.enableServerGroup = function enableServerGroup() {
+//      var serverGroup = $scope.serverGroup;
+//
+//      var taskMonitor = {
+//        application: application,
+//        title: 'Enabling ' + serverGroup.name,
+//      };
+//
+//      var submitMethod = (params) => serverGroupWriter.enableServerGroup(
+//          serverGroup,
+//          application,
+//          angular.extend(params, dcosServerGroupParamsMixin.enableServerGroup(serverGroup, application))
+//      );
+//
+//      var confirmationModalParams = {
+//        header: 'Really enable ' + serverGroup.name + '?',
+//        buttonText: 'Enable ' + serverGroup.name,
+//        provider: 'dcos',
+//        account: serverGroup.account,
+//        taskMonitorConfig: taskMonitor,
+//        submitMethod: submitMethod,
+//        askForReason: true,
+//      };
+//
+//      confirmationModalService.confirm(confirmationModalParams);
+//    };
 
     this.resizeServerGroup = function resizeServerGroup() {
       $uibModal.open({

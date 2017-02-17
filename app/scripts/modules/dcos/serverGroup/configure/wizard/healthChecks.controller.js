@@ -3,8 +3,6 @@
 let angular = require('angular');
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChecks', [
-  require('angular-ui-router'),
-  require('angular-ui-bootstrap'),
 ])
   .controller('dcosServerGroupHealthChecksController', function($scope) {
 

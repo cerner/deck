@@ -3,8 +3,6 @@
 let angular = require('angular');
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', [
-  require('angular-ui-router'),
-  require('angular-ui-bootstrap'),
 ])
   .controller('dcosServerGroupVolumesController', function($scope) {
 

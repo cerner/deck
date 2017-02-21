@@ -108,6 +108,21 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
       }
     });
 
+    this.isLastServerGroupInRegion = function (serverGroup, application ) {
+      try {
+        var cluster = _.find(application.clusters, {name: serverGroup.cluster, account:serverGroup.account});
+        return _.filter(cluster.serverGroups, {region: serverGroup.region}).length === 1;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    this.getBodyTemplate = (serverGroup, application) => {
+      if (this.isLastServerGroupInRegion(serverGroup, application)) {
+        return serverGroupWarningMessageService.getMessage(serverGroup);
+      }
+    };
+
     this.destroyServerGroup = () => {
       var serverGroup = $scope.serverGroup;
 
@@ -136,7 +151,6 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
         provider: 'dcos',
         account: serverGroup.account,
         taskMonitorConfig: taskMonitor,
-        platformHealthOnlyShowOverride: app.attributes.platformHealthOnlyShowOverride,
         platformHealthType: 'DCOS',
         submitMethod: submitMethod,
         body: this.getBodyTemplate(serverGroup, application),
@@ -148,21 +162,6 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
       };
 
       confirmationModalService.confirm(confirmationModalParams);
-    };
-
-    this.getBodyTemplate = (serverGroup, application) => {
-      if (this.isLastServerGroupInRegion(serverGroup, application)) {
-        return serverGroupWarningMessageService.getMessage(serverGroup);
-      }
-    };
-
-    this.isLastServerGroupInRegion = function (serverGroup, application ) {
-      try {
-        var cluster = _.find(application.clusters, {name: serverGroup.cluster, account:serverGroup.account});
-        return _.filter(cluster.serverGroups, {region: serverGroup.region}).length === 1;
-      } catch (error) {
-        return false;
-      }
     };
 
     this.disableServerGroup = function disableServerGroup() {
@@ -192,33 +191,6 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
       confirmationModalService.confirm(confirmationModalParams);
     };
 
-//    this.enableServerGroup = function enableServerGroup() {
-//      var serverGroup = $scope.serverGroup;
-//
-//      var taskMonitor = {
-//        application: application,
-//        title: 'Enabling ' + serverGroup.name,
-//      };
-//
-//      var submitMethod = (params) => serverGroupWriter.enableServerGroup(
-//          serverGroup,
-//          application,
-//          angular.extend(params, dcosServerGroupParamsMixin.enableServerGroup(serverGroup, application))
-//      );
-//
-//      var confirmationModalParams = {
-//        header: 'Really enable ' + serverGroup.name + '?',
-//        buttonText: 'Enable ' + serverGroup.name,
-//        provider: 'dcos',
-//        account: serverGroup.account,
-//        taskMonitorConfig: taskMonitor,
-//        submitMethod: submitMethod,
-//        askForReason: true,
-//      };
-//
-//      confirmationModalService.confirm(confirmationModalParams);
-//    };
-
     this.resizeServerGroup = function resizeServerGroup() {
       $uibModal.open({
         templateUrl: require('./resize/resize.html'),
@@ -229,19 +201,5 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
         }
       });
     };
-
-    // this.cloneServerGroup = function cloneServerGroup(serverGroup) {
-    //   $uibModal.open({
-    //     templateUrl: require('../configure/wizard/wizard.html'),
-    //     controller: 'dcosCloneServerGroupController as ctrl',
-    //     size: 'lg',
-    //     resolve: {
-    //       title: function() { return 'Clone ' + serverGroup.name; },
-    //       application: function() { return application; },
-    //       serverGroup: function() { return serverGroup; },
-    //       serverGroupCommand: function() { return dcosServerGroupCommandBuilder.buildServerGroupCommandFromExisting(application, serverGroup); },
-    //     }
-    //   });
-    // };
   }
 );

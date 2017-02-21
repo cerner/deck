@@ -53,6 +53,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroup.details.resize.contr
           account: serverGroup.account,
           region: serverGroup.region,
           capacity: capacity,
+          targetSize: $scope.command.newSize,
         });
       };
 

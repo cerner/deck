@@ -47,7 +47,7 @@ describe('dcosServerGroupNetworkController', function() {
       controller.addServiceEndpoint();
       controller.addServiceEndpoint();
 
-      scope.command.networkType = scope.command.networkTypes[1];
+      scope.command.networkType = controller.networkTypes[1];
       controller.changeNetworkType();
 
       scope.command.serviceEndpoints.forEach(function(endpoint) {

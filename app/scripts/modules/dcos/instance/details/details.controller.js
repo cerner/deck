@@ -10,6 +10,9 @@ import {RECENT_HISTORY_SERVICE} from 'core/history/recentHistory.service';
 
 let angular = require('angular');
 
+// NOTE: Instead of using instance.name, we're using instance.taskId. Instance.name is not 
+// reliable after a recent gate change that merges account information into instance information - the account name field clobbers
+// the instance name.
 module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
   require('angular-ui-router'),
   require('angular-ui-bootstrap'),
@@ -33,8 +36,7 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
     };
 
     this.uiLink = function uiLink() {
-      // TODO this won't work, introduce
-      return dcosProxyUiService.buildLink($scope.instance.account, 'services', $scope.instance.region, $scope.instance.serverGroupName, $scope.instance.name);
+      return dcosProxyUiService.buildLink($scope.instance.account, 'services', $scope.instance.region, $scope.instance.serverGroupName, $scope.instance.taskId);
     };
 
     this.showJson = function showJson() {
@@ -48,7 +50,6 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
     };
 
     function retrieveInstance() {
-      // TODO edit this
       var extraData = {};
       var instanceSummary, loadBalancers, account, region;
       app.serverGroups.data.some(function (serverGroup) {
@@ -70,17 +71,11 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
         recentHistoryService.addExtraDataToLatest('instances', extraData);
         return instanceReader.getInstanceDetails(account, region, instance.instanceId).then(function(details) {
           $scope.state.loading = false;
-          //extractHealthMetrics(instanceSummary, details);
           $scope.instance = _.defaults(details, instanceSummary);
           $scope.instance.account = account;
           $scope.instance.serverGroupName = extraData.serverGroup;
           $scope.instance.region = region;
           $scope.instance.loadBalancers = loadBalancers;
-          //$scope.baseIpAddress = $scope.instance.placement.containerIp || $scope.instance.placement.host;
-          //$scope.instance.externalIpAddress = $scope.instance.placement.host;
-          // if (overrides.instanceDetailsLoaded) {
-          //   overrides.instanceDetailsLoaded();
-          // }
         },
           autoClose
         );
@@ -142,17 +137,16 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
 
       var taskMonitor = {
         application: app,
-        title: 'Registering ' + instance.name + ' with ' + loadBalancerNames
+        title: 'Registering ' + instance.taskId + ' with ' + loadBalancerNames
       };
 
       var submitMethod = function () {
-        // TODO Don't think we need this.
         return instanceWriter.registerInstanceWithLoadBalancer(instance, app, { interestingHealthProviderNames: ['Dcos'] } );
       };
 
       confirmationModalService.confirm({
-        header: 'Really register ' + instance.name + ' with ' + loadBalancerNames + '?',
-        buttonText: 'Register ' + instance.name,
+        header: 'Really register ' + instance.taskId + ' with ' + loadBalancerNames + '?',
+        buttonText: 'Register ' + instance.taskId,
         account: instance.account,
         taskMonitorConfig: taskMonitor,
         submitMethod: submitMethod
@@ -165,7 +159,7 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
 
       var taskMonitor = {
         application: app,
-        title: 'Deregistering ' + instance.name + ' from ' + loadBalancerNames
+        title: 'Deregistering ' + instance.taskId + ' from ' + loadBalancerNames
       };
 
       var submitMethod = function () {
@@ -173,8 +167,8 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
       };
 
       confirmationModalService.confirm({
-        header: 'Really deregister ' + instance.name + ' from ' + loadBalancerNames + '?',
-        buttonText: 'Deregister ' + instance.name,
+        header: 'Really deregister ' + instance.taskId + ' from ' + loadBalancerNames + '?',
+        buttonText: 'Deregister ' + instance.taskId,
         provider: 'dcos',
         account: instance.account,
         taskMonitorConfig: taskMonitor,

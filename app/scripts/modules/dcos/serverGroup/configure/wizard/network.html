@@ -10,14 +10,27 @@
         <div class="col-md-3 sm-label-right">
             Network Type
         </div>
-        <ui-select name="typeSelect" ng-model="command.networkType" on-select="networkController.changeNetworkType()" search-enabled="false" class="form-control input-sm">
-            <ui-select-match>{{$select.selected.name}}</ui-select-match>
-            <ui-select-choices
-                    repeat="type in command.networkTypes">
-                <div ng-bind-html="type.name"></div>
-            </ui-select-choices>
-        </ui-select>
-
+        <div class="col-md-4">
+          <ui-select name="typeSelect" ng-model="command.networkType" on-select="networkController.changeNetworkType()" search-enabled="true" class="form-control input-sm">
+              <ui-select-match>{{$select.selected.name}}</ui-select-match>
+              <ui-select-choices
+                      repeat="networkType.type as networkType in networkController.networkTypes | filter: $select.search">
+                  <span ng-bind-html="networkType.name | highlight: $select.search"></span>
+              </ui-select-choices>
+          </ui-select>
+        </div>
+    </div>
+    <!--TODO don't like hardcoding the index in here -->
+    <div class="form-group" ng-show="command.networkType === networkController.networkTypes[2]">
+        <div class="col-md-3 sm-label-right">
+            Network Name
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control input-sm" name="networkName" ng-model="command.networkName" required/>
+        </div>
+    </div>
+    <hr/>
+    <div class="form-group">
         <table class="table table-condensed packed">
             <thead>
             <tr>
@@ -27,54 +40,58 @@
             <tbody>
             <tr ng-repeat="serviceEndpoint in command.serviceEndpoints">
                 <td>
-                    <div class="col-md-3 sm-label-right">
-                        Name
-                    </div>
-                    <div class="col-md-7">
-                        <input type="text" class="form-control input-sm" name="name" ng-model="serviceEndpoint.name"/>
-                    </div>
-
-                    <div ng-show="serviceEndpoint.networkType === command.networkTypes[0]" class="col-md-3 sm-label-right">
-                        LB Port
-                    </div>
-                    <div ng-show="serviceEndpoint.networkType !== command.networkTypes[0]" class="col-md-3 sm-label-right">
-                        Container Port
-                    </div>
-                    <div class="col-md-2">
-                        <input type="number" class="form-control input-sm" name="port" ng-model="serviceEndpoint.port" min="0"/>
-                    </div>
-
-                    <div class="col-md-3 sm-label-right">
-                        Load Balanced
-                    </div>
-                    <div class="col-md-2">
-                        <input type="checkbox" name="loadBalanced" ng-model="serviceEndpoint.loadBalanced"/>
-                    </div>
-
-                    <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-3 sm-label-right">
-                        Expose endpoints on host network
-                    </div>
-                    <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-2">
-                        <input type="checkbox" name="exposeToHost" ng-model="serviceEndpoint.exposeToHost"/>
-                    </div>
-
-                    <div class="col-md-3 sm-label-right">
+                    <div class="form-group">
+                      <div class="col-md-3 sm-label-right">
+                          Name
+                      </div>
+                      <div class="col-md-2">
+                          <input type="text" class="form-control input-sm" name="name" ng-model="serviceEndpoint.name"/>
+                      </div>
+                      <div class="col-md-3 sm-label-right">
                         Protocol
-                    </div>
-                    <div class="col-md-2">
-                        <ui-select name="protocolSelect" ng-model="serviceEndpoint.protocol" search-enabled="false" class="form-control input-sm">
-                            <ui-select-match>{{$select.selected}}</ui-select-match>
-                            <ui-select-choices
-                                    repeat="protocol in command.serviceEndpointProtocols">
-                                <div ng-bind-html="protocol"></div>
-                            </ui-select-choices>
-                        </ui-select>
+                      </div>
+
+                      <div class="col-md-2">
+                          <ui-select name="protocolSelect" ng-model="serviceEndpoint.protocol" class="form-control input-sm">
+                              <ui-select-match>{{$select.selected}}</ui-select-match>
+                              <ui-select-choices
+                                      repeat="protocol in command.serviceEndpointProtocols | filter: $select.search">
+                                  <div ng-bind-html="protocol | highlight: $select.search"></div>
+                              </ui-select-choices>
+                          </ui-select>
+                      </div>
                     </div>
 
-                    <div class="col-md-2">
-                        <a class="btn btn-link sm-label" ng-click="networkController.removeServiceEndpoint($index)">
-                            <span class="glyphicon glyphicon-trash"></span>Remove Service Endpoint
-                        </a>
+                    <div class="form-group">
+                      <!-- TODO check on this-->
+                      <div ng-show="serviceEndpoint.networkType === command.networkTypes[0]" class="col-md-3 sm-label-right">
+                          LB Port
+                      </div>
+                      <div ng-show="serviceEndpoint.networkType !== command.networkTypes[0]" class="col-md-3 sm-label-right">
+                          Container Port
+                      </div>
+                      <div class="col-md-2">
+                          <input type="number" class="form-control input-sm" name="port" ng-model="serviceEndpoint.port" min="0"/>
+                      </div>
+                      <div class="col-md-3 sm-label-right">
+                          Load Balanced
+                      </div>
+                      <div class="col-md-2 checkbox-inline">
+                          <input type="checkbox" name="isLoadBalanced" ng-model="serviceEndpoint.isLoadBalanced"/>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-3 sm-label-right">
+                          Expose endpoints on host network
+                      </div>
+                      <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-2">
+                          <input type="checkbox" name="exposeToHost" ng-model="serviceEndpoint.exposeToHost"/>
+                      </div>
+                    </div>
+                    <div class="col-md-12 sm-label-right">
+                      <a class="btn btn-link sm-label" ng-click="networkController.removeServiceEndpoint($index)">
+                        <span class="glyphicon glyphicon-trash"></span> Remove Service Endpoint
+                      </a>
                     </div>
                 </td>
             </tr>

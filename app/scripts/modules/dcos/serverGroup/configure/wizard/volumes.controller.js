@@ -6,7 +6,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', 
 ])
   .controller('dcosServerGroupVolumesController', function($scope) {
 
-    $scope.command.volumeModes = [
+    this.volumeModes = [
         {
             mode: 'RW',
             description: 'Read And Write',
@@ -23,7 +23,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', 
         persistent: {
             size: null
         },
-        mode: $scope.command.volumeModes[0],
+        mode: this.volumeModes[0].mode,
       });
     };
 
@@ -35,7 +35,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', 
       $scope.command.dockerVolumes.push({
         containerPath: null,
         hostPath: null,
-        mode: $scope.command.volumeModes[0],
+        mode: this.volumeModes[0].mode,
       });
     };
 
@@ -53,7 +53,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', 
             'dvdi/driver': 'rexray'
           }
         },
-        mode: $scope.command.volumeModes[0],
+        mode: this.volumeModes[0].mode,
       });
     };
 

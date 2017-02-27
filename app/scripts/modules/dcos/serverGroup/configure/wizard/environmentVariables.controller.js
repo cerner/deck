@@ -6,11 +6,29 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
 ])
   .controller('dcosServerGroupEnvironmentVariablesController', function($scope) {
 
-    $scope.command.env = [];
-    $scope.command.secrets = {};
+    $scope.command.viewModel.env = [];
+
+    // init from the model
+    if ($scope.command.env) {
+      Object.keys($scope.command.env).forEach((key) => {
+
+        let val = $scope.command.env[key];
+        let secretSource = null;
+        if (val.secret) {
+          secretSource = $scope.command.secrets[val.secret].source;
+        }
+
+        $scope.command.viewModel.env.push({
+          name: key,
+          value: val,
+          rawValue: secretSource || val,
+          isSecret: secretSource != null
+        });
+      });
+    }
 
     this.addEnvironmentVariable = function() {
-      $scope.command.env.push({
+      $scope.command.viewModel.env.push({
         name: null,
         value: null,
         isSecret: false
@@ -18,14 +36,15 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
     };
 
     this.removeEnvironmentVariable = function(index) {
-      $scope.command.env.splice(index, 1);
+      $scope.command.viewModel.env.splice(index, 1);
+      this.synchronize();
     };
 
     this.updateValue = function(index) {
-      if ($scope.command.env[index].secret === true) {
-        $scope.command.secrets['secret' + index].source = $scope.command.env[index].rawValue;
+      if ($scope.command.viewModel.env[index].secret === true) {
+        $scope.command.secrets['secret' + index].source = $scope.command.viewModel.env[index].rawValue;
       } else {
-        $scope.command.env[index].value = $scope.command.env[index].rawValue;
+        $scope.command.viewModel.env[index].value = $scope.command.viewModel.env[index].rawValue;
       }
     };
 
@@ -40,26 +59,32 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
 
     this.addSecret = function(index) {
       $scope.command.secrets['secret' + index] = {
-          'source': $scope.command.env[index].value
+          'source': $scope.command.viewModel.env[index].value
       };
 
-      $scope.command.env[index].value = {
+      $scope.command.viewModel.env[index].value = {
         'secret': 'secret' + index
       };
     };
 
     this.removeSecret = function(index) {
-      $scope.command.env[index].value =
+      $scope.command.viewModel.env[index].value =
         $scope.command.secrets['secret' + index].source;
 
         delete $scope.command.secrets['secret' + index];
     };
 
     this.synchronize = () => {
-      let allNames = $scope.command.env.map((item) => item.name);
-      $scope.command.env.forEach((item) => {
+      let allNames = $scope.command.viewModel.env.map((item) => item.name);      
+      Object.keys($scope.command.env).forEach((key) => delete $scope.command.env[key]);
+      
+      $scope.command.viewModel.env.forEach((item) => {
+        if (item.name) {
+          $scope.command.env[item.name] = item.value;
+        }
+
         item.checkUnique = allNames.filter((name) => item.name !== name);
       });
     };
-    $scope.$watch(() => JSON.stringify($scope.command.env), this.synchronize);
+    $scope.$watch(() => JSON.stringify($scope.command.viewModel.env), this.synchronize);
   });

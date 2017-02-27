@@ -21,7 +21,7 @@
     <div class="header-text">
       <span class="glyphicon glyphicon-hdd {{instance.healthState}}"></span>
       <h3 select-on-dbl-click>
-        {{instance.name}}
+        {{instance.taskId}}
       </h3>
     </div>
     <div>
@@ -69,7 +69,7 @@
         <dt>JSON</dt>
         <dd><a href ng-click="ctrl.showJson()">Show JSON</a></dd>
         <dt>DC/OS UI</dt>
-        <dd><a href={{ctrl.uiLink()}} target="_blank">{{instance.name}}</a></dd>
+        <dd><a href={{ctrl.uiLink()}} target="_blank">{{instance.taskId}}</a></dd>
       </dl>
     </collapsible-section>
     <collapsible-section heading="Status" expanded="true">

@@ -33,7 +33,8 @@ describe('dcosServerGroupCommandBuilder', function() {
     it('should use base server group otherwise use the default', function() {
       spyOn(this.namingService, 'parseServerGroupName').and.returnValue(this.$q.when('dcosApp-test-test'));
 
-      var baseServerGroup = {
+      var baseServerGroup = {};
+      baseServerGroup.deployDescription = {
         account: 'prod',
         region: 'test',
         cluster: 'dcos-test-test',

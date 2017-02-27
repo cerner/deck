@@ -113,22 +113,23 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         upgradeStrategy: null,
         acceptedResourceRoles: null,
         residency: null,
-        secrets: null,
+        secrets: {},
         taskKillGracePeriodSeconds: null,
         requirePorts: false,
-        docker: null,
+        docker: {parameters: {}},
         labels: {},
         healthChecks: [],
         persistentVolumes: [],
         dockerVolumes: [],
         externalVolumes: [],
-        networkType: null,
+        networkType: 'HOST',
         serviceEndpoints: [],
         viewState: {
           mode: defaults.mode || 'create',
         },
         cloudProvider: 'dcos',
         selectedProvider: 'dcos',
+        viewModel: {}
       };
 
       return $q.when(command);
@@ -150,52 +151,32 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
     function buildServerGroupCommandFromExisting(app, existing, mode) {
       mode = mode || 'clone';
 
-      var serverGroupName = namingService.parseServerGroupName(existing.name);
+      var command = existing.deployDescription;
 
-      var command = {
-        credentials: existing.account,
-        account: existing.account,
-        application: serverGroupName.application,
-        region: existing.region,
-        stack: serverGroupName.stack,
-        freeFormDetails: serverGroupName.freeFormDetails,
-        cmd: null,
-        args: null,
-        dcosUser: null,
-        env: {},
-        desiredCapacity: existing.capacity.desired,
-        cpus: existing.cpus,
-        mem: existing.mem,
-        disk: existing.disk,
-        gpus: 0.0,
-        constraints: '',
-        fetch: null,
-        storeUrls: null,
-        backoffSeconds: null,
-        backoffFactor: null,
-        maxLaunchDelaySeconds: null,
-        readinessChecks: null,
-        dependencies: null,
-        upgradeStrategy: null,
-        acceptedResourceRoles: null,
-        residency: null,
-        secrets: null,
-        taskKillGracePeriodSeconds: null,
-        requirePorts: false,
-        docker: null,
-        labels: {},
-        healthChecks: [],
-        persistentVolumes: [],
-        dockerVolumes: [],
-        externalVolumes: [],
-        networkType: null,
-        serviceEndpoints: [],
-        cloudProvider: 'dcos',
-        selectedProvider: 'dcos',
-        viewState: {
-          mode: mode,
-        },
+      command.cloudProvider = 'dcos';
+      command.selectedProvider = 'dcos';
+      command.account = existing.account;
+      command.strategy = '';
+      command.viewModel = {};
+
+      command.viewState = {
+        mode: mode,
       };
+
+      command.source = {
+        serverGroupName: existing.name,
+        asgName: existing.name,
+        account: existing.account,
+        region: existing.region,
+      };
+
+      if (!command.capacity) {
+        command.capacity = {
+          min: command.desiredCapacity,
+          max: command.desiredCapacity,
+          desired: command.desiredCapacity,
+        };
+      }
 
       return $q.when(command);
     }
@@ -205,7 +186,6 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
 
       var commandOptions = {account: pipelineCluster.account, region: pipelineCluster.region};
       var asyncLoader = $q.all({command: buildNewServerGroupCommand(application, commandOptions)});
-
 
       return asyncLoader.then(function (asyncData) {
         var command = asyncData.command;

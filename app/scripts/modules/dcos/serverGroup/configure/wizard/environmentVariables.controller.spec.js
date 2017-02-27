@@ -15,6 +15,8 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
     scope = $rootScope.$new();
 
     scope.command = {};
+    scope.command.secrets = []
+    scope.command.viewModel = {};
 
     controller = $controller('dcosServerGroupEnvironmentVariablesController', {
       $scope: scope,
@@ -24,13 +26,16 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
   describe('Environment Variables', function () {
 
     beforeEach(function() {
-      scope.command.env = [];
+      scope.command.env = {};
+      scope.command.secrets = []
+      scope.command.viewModel.env = [];
     });
 
     it('Environment Variables spec 1', function () {
       controller.addEnvironmentVariable();
 
-      expect(scope.command.env.length).toEqual(1);
+      expect(scope.command.viewModel.env.length).toEqual(1);
+      //expect(scope.command.env.length).toEqual(1);
     });
 
     it('Environment Variables spec 2', function () {
@@ -38,14 +43,17 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
 
       controller.addEnvironmentVariable();
 
-      scope.command.env[index].name = 'Key';
-      scope.command.env[index].value = 'Value';
-      scope.command.env[index].rawValue = scope.command.env[index].value;
-      scope.command.env[index].isSecret = true;
+      scope.command.viewModel.env[index].name = 'Key';
+      scope.command.viewModel.env[index].value = 'Value';
+      scope.command.viewModel.env[index].rawValue = scope.command.viewModel.env[index].value;
+      scope.command.viewModel.env[index].isSecret = true;
 
       controller.addSecret(index);
+      controller.synchronize();
 
-      expect(scope.command.env.length).toEqual(1);
+      expect(scope.command.viewModel.env.length).toEqual(1);
+      expect(scope.command.env['Key']).toEqual({secret: 'secret0'});
+
       expect(Object.keys(scope.command.secrets).length).toEqual(1);
     });
 
@@ -54,15 +62,18 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
 
       controller.addEnvironmentVariable();
 
-      scope.command.env[index].name = 'Key';
-      scope.command.env[index].value = 'Value';
-      scope.command.env[index].rawValue = scope.command.env[index].value;
-      scope.command.env[index].isSecret = true;
+      scope.command.viewModel.env[index].name = 'Key';
+      scope.command.viewModel.env[index].value = 'Value';
+      scope.command.viewModel.env[index].rawValue = scope.command.viewModel.env[index].value;
+      scope.command.viewModel.env[index].isSecret = true;
 
       controller.addSecret(index);
       controller.removeSecret(index);
+      controller.synchronize();
 
-      expect(scope.command.env.length).toEqual(1);
+      expect(scope.command.viewModel.env.length).toEqual(1);
+      expect(scope.command.env['Key']).toEqual('Value');
+
       expect(Object.keys(scope.command.secrets).length).toEqual(0);
     });
 
@@ -71,13 +82,13 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
 
       controller.addEnvironmentVariable();
 
-      scope.command.env[index].name = 'Key';
-      scope.command.env[index].value = 'oldValue';
-      scope.command.env[index].rawValue = 'newValue';
+      scope.command.viewModel.env[index].name = 'Key';
+      scope.command.viewModel.env[index].value = 'oldValue';
+      scope.command.viewModel.env[index].rawValue = 'newValue';
 
       controller.updateValue(index);
 
-      expect(scope.command.env[index].value).toEqual(scope.command.env[index].rawValue);
+      expect(scope.command.viewModel.env[index].value).toEqual(scope.command.viewModel.env[index].rawValue);
     });
 
     it('Environment Variables spec 5', function () {
@@ -85,22 +96,22 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
 
       controller.addEnvironmentVariable();
 
-      scope.command.env[index].name = 'Key';
-      scope.command.env[index].value = 'oldValue';
-      scope.command.env[index].rawValue = scope.command.env[index].value;
-      scope.command.env[index].isSecret = true;
+      scope.command.viewModel.env[index].name = 'Key';
+      scope.command.viewModel.env[index].value = 'oldValue';
+      scope.command.viewModel.env[index].rawValue = scope.command.viewModel.env[index].value;
+      scope.command.viewModel.env[index].isSecret = true;
 
       controller.addSecret(index);
       controller.updateValue(index);
 
-      expect(scope.command.secrets['secret' + index].source).toEqual(scope.command.env[index].rawValue);
+      expect(scope.command.secrets['secret' + index].source).toEqual(scope.command.viewModel.env[index].rawValue);
     });
 
     it('Environment Variables spec 6', function () {
       controller.addEnvironmentVariable();
       controller.removeEnvironmentVariable(0);
 
-      expect(scope.command.env.length).toEqual(0);
+      expect(scope.command.viewModel.env.length).toEqual(0);
     });
 
     it('Environment Variables spec 7', function () {
@@ -108,21 +119,21 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
 
       controller.addEnvironmentVariable();
 
-      scope.command.env[index].name = 'Key';
-      scope.command.env[index].value = 'oldValue';
-      scope.command.env[index].rawValue = scope.command.env[index].value;
-      scope.command.env[index].isSecret = false;
+      scope.command.viewModel.env[index].name = 'Key';
+      scope.command.viewModel.env[index].value = 'oldValue';
+      scope.command.viewModel.env[index].rawValue = scope.command.viewModel.env[index].value;
+      scope.command.viewModel.env[index].isSecret = false;
 
-      controller.updateSecret(index, scope.command.env[index].isSecret);
+      controller.updateSecret(index, scope.command.viewModel.env[index].isSecret);
 
-      expect(scope.command.env.length).toEqual(1);
+      expect(scope.command.viewModel.env.length).toEqual(1);
       expect(Object.keys(scope.command.secrets).length).toEqual(1);
 
-      scope.command.env[index].isSecret = true;
+      scope.command.viewModel.env[index].isSecret = true;
 
-      controller.updateSecret(index, scope.command.env[index].isSecret);
+      controller.updateSecret(index, scope.command.viewModel.env[index].isSecret);
 
-      expect(scope.command.env.length).toEqual(1);
+      expect(scope.command.viewModel.env.length).toEqual(1);
       expect(Object.keys(scope.command.secrets).length).toEqual(0);
 
     });

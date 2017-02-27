@@ -1,6 +1,6 @@
 <form name="containerSettings" class="container-fluid form-horizontal" ng-controller="dcosServerGroupContainerSettingsController as containerSettingsController" novalidate>
     <div class="form-group">
-        <div class="col-md-3 md-label-right"><b>Container Image</b>
+        <div class="col-md-3 sm-label-right"><b>Container Image</b>
             <help-field key="dcos.serverGroup.docker.image"></help-field>
         </div>
         <div class="col-md-9">
@@ -17,24 +17,24 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="col-md-3 sm-label-right">
-            Extend runtime privileges
-        </div>
-        <div class="col-md-2">
-            <input type="checkbox" name="privilegedCheck" ng-model="command.docker.privileged"/>
-        </div>
-        <div class="col-md-3 sm-label-right">
-            Force pull image on launch
-        </div>
-        <div class="col-md-2">
-            <input type="checkbox" name="forcePullCheck" ng-model="command.docker.forcePullImage"/>
-        </div>
+      <div class="col-md-3 sm-label-right">
+          Extend runtime privs
+      </div>
+      <div class="col-md-1 checkbox-inline">
+          <input type="checkbox" name="privilegedCheck" ng-model="command.docker.privileged"/>
+      </div>
+      <div class="col-md-3 sm-label-right">
+          Force pull image
+      </div>
+      <div class="col-md-1 checkbox-inline">
+          <input type="checkbox" name="forcePullCheck" ng-model="command.docker.forcePullImage"/>
+      </div>
     </div>
     <div class="form-group">
-        <h4 class="col-sm-12">
+        <div class="col-sm-3 sm-label-right">
             <b>Docker Parameters</b>
-        </h4>
-        <div class="col-sm-12">
+        </div>
+        <div class="col-sm-9">
             <map-editor model="command.docker.parameters" allow-empty="true"></map-editor>
         </div>
     </div>

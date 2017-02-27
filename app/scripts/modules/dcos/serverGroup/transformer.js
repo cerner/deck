@@ -27,13 +27,9 @@ module.exports = angular
 
       command.cloudProvider = 'dcos';
       command.credentials = command.account;
-      // this feels wrong but i couldn't figure out how to get the environment controller to
-      // build an object instead of an array, forgive me.
-      command.env = command.env.reduce(function(map, obj) {
-        map[obj.name] = obj.value;
-        return map;
-      }, {});
+
       delete command.viewState;
+      delete command.viewModel;
       delete command.backingData;
       delete command.selectedProvider;
 

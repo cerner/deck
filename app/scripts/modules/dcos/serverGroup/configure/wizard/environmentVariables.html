@@ -1,15 +1,15 @@
 <form name="form" class="container-fluid form-horizontal" name="form" ng-controller="dcosServerGroupEnvironmentVariablesController as environmentVariableController" novalidate>
   <div class="form-group">
     <h5 class="col-sm-12">
-            Set variables for each task your service launches. You can also use variables to expose Secrets.
-            <a href="https://mesosphere.github.io/marathon/docs/task-environment-vars.html">
-                Learn more about variables.
-            </a>
-        </h5>
+        Set variables for each task your service launches. You can also use variables to expose Secrets.
+        <a href="https://mesosphere.github.io/marathon/docs/task-environment-vars.html">
+            Learn more about variables.
+        </a>
+    </h5>
     <table class="table table-condensed packed">
       <tbody>
-        <tr ng-repeat="environmentVariable in command.env">
-          <td>
+        <tr ng-repeat="environmentVariable in command.viewModel.env">
+          <td valign="middle">
             <div class="col-md-1 sm-label-right">
               Name
             </div>
@@ -26,14 +26,15 @@
             <div class="col-md-1 sm-label-right">
               Secret
             </div>
-            <div class="col-md-1">
-              <input type="checkbox" name="secretCheck" ng-model="environmentVariable.secret"
-               ng-click="environmentVariableController.updateSecret($index, environmentVariable.isSecret)"/>
+            <div class="col-md-1 checkbox-inline">
+              <input type="checkbox" name="secretCheck" ng-model="environmentVariable.isSecret"
+              ng-click="environmentVariableController.updateSecret($index, environmentVariable.isSecret)"/>
             </div>
-
-            <a class="btn btn-link sm-label pull-right" ng-click="environmentVariableController.removeEnvironmentVariable($index)">
-              <span class="glyphicon glyphicon-trash"></span>Remove Environment Variable
-            </a>
+            <div class="col-md-12 sm-label-right">
+              <a class="btn btn-link sm-label" ng-click="environmentVariableController.removeEnvironmentVariable($index)">
+                <span class="glyphicon glyphicon-trash"></span> Remove Environment Variable
+              </a>
+            </div>
           </td>
         </tr>
       </tbody>

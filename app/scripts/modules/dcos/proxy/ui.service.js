@@ -6,7 +6,6 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [
   require('core/config/settings.js'),
 ])
   .factory('dcosProxyUiService', function(settings) {
-    //TODO Could we use this to proxy to DCOS itself?
     let apiPrefix = '#';
 
     function getHost(accountName) {
@@ -27,9 +26,7 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [
     function buildLink(accountName, kind, region, name, taskName = null) {
 
       let host = getHost(accountName);
-
-      // TODO the region == 'global' check should probably change, in the case where they actually set the region as global. This only applies to load balancers.
-      let link = host + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + accountName + '/' + (region == 'global' ? '' : region.replace('_', '/') + '/') + name);
+      let link = host + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + accountName + '/' + region.replace('_', '/') + '/') + name;
       if (taskName) {
         link = link + '/tasks/' + taskName;
       }
@@ -37,7 +34,12 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [
       return link;
     }
 
+    function buildLoadBalancerLink(accountName, kind, name) {
+      return getHost(accountName) + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + accountName + '/') + name;
+    }
+
     return {
       buildLink: buildLink,
+      buildLoadBalancerLink: buildLoadBalancerLink
     };
   });

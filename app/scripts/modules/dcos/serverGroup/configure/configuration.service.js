@@ -90,6 +90,8 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
     function configureAccount(command) {
       var result = { dirty: {} };
 
+      // TODO refresh docker registries on account change?
+
       command.backingData.account = command.backingData.accountMap[command.account];
 
       return result;

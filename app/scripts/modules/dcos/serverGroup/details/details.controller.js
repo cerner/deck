@@ -196,5 +196,19 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
         }
       });
     };
+
+    this.cloneServerGroup = function cloneServerGroup(serverGroup) {
+      $uibModal.open({
+        templateUrl: require('../configure/wizard/wizard.html'),
+        controller: 'dcosCloneServerGroupController as ctrl',
+        size: 'lg',
+        resolve: {
+          title: function() { return 'Clone ' + serverGroup.name; },
+          application: function() { return application; },
+          serverGroup: function() { return serverGroup; },
+          serverGroupCommand: function() { return dcosServerGroupCommandBuilder.buildServerGroupCommandFromExisting(application, serverGroup); },
+        }
+      });
+    };
   }
 );

@@ -117,12 +117,6 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
       }
     };
 
-    this.getBodyTemplate = (serverGroup, application) => {
-      if (this.isLastServerGroupInRegion(serverGroup, application)) {
-        return serverGroupWarningMessageService.getMessage(serverGroup);
-      }
-    };
-
     this.destroyServerGroup = () => {
       var serverGroup = $scope.serverGroup;
 
@@ -153,13 +147,14 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
         taskMonitorConfig: taskMonitor,
         platformHealthType: 'DCOS',
         submitMethod: submitMethod,
-        body: this.getBodyTemplate(serverGroup, application),
         onTaskComplete: function () {
           if ($state.includes('**.serverGroup', stateParams)) {
             $state.go('^');
           }
         },
       };
+
+      serverGroupWarningMessageService.addDestroyWarningMessage(app, serverGroup, confirmationModalParams);
 
       confirmationModalService.confirm(confirmationModalParams);
     };

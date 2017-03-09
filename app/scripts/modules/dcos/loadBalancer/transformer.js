@@ -55,10 +55,7 @@ module.exports = angular.module('spinnaker.dcos.loadBalancer.transformer', [])
           minPort: 10000,
           maxPort: 10100
         },
-        // TODO account
         credentials: settings.providers.dcos ? settings.providers.dcos.defaults.account : null,
-        //namespace: settings.providers.kubernetes ? settings.providers.kubernetes.defaults.namespace : null,
-
       };
     }
 

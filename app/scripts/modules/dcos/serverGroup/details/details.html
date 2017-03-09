@@ -58,23 +58,19 @@
         <dd>{{serverGroup.kind}}</dd>
         <dt>JSON</dt>
         <dd><a href ng-click="ctrl.showJson()">Show JSON</a></dd>
-        <!--<dt ng-show="serverGroup.revision">Revision</dt>
-        <dd ng-show="serverGroup.revision">{{serverGroup.revision}}</dd>-->
         <dt>DC/OS UI</dt>
         <dd><a href={{ctrl.uiLink()}} target="_blank">{{serverGroup.name}}</a></dd>
       </dl>
     </collapsible-section>
-     <!--TODO serverGroup.instances is required by spinnaker and is the instance (task) information. We'll have to put # of instances under capacity or something -->
-    <!--<collapsible-section heading="Capacity" expanded="true">
+    <collapsible-section heading="Capacity" expanded="true">
         <dl class="dl-horizontal dl-flex">
-           TODO serverGroup.instances
             <dt>Current</dt>
-            <dd>{{serverGroup.instances}}</dd>
+            <dd>{{serverGroup.capacity.desired}}</dd>
         </dl>
         <div>
-            <a href ng-click="controller.resizeServerGroup()">Resize Server Group</a>
+            <a href ng-click="ctrl.resizeServerGroup()">Resize Server Group</a>
         </div>
-    </collapsible-section>-->
+    </collapsible-section>
     <collapsible-section heading="Status" expanded="true">
       <dl class="dl-horizontal dl-flex" ng-if="serverGroup">
         <dt>Tasks</dt>

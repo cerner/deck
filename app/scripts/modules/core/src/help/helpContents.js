@@ -560,7 +560,7 @@ module.exports = angular.module('spinnaker.core.help.contents', [])
     'dcos.loadBalancer.portRange.protocol': '(Required) The protocol to be reserved for the given port range (default: TCP).',
     'dcos.loadBalancer.detail': '(Optional) A string of free-form alphanumeric characters; by convention, we recommend using "frontend".',
     'dcos.loadBalancer.stack': '(Optional) One of the core naming components of a cluster, used to create vertical stacks of dependent services for integration testing.',
-    'dcos.serverGroup.region': '(Optional) One of the core naming components of a cluster, used to create logical groupings with DCOS (using Marathon groups) of applications.',
+    'dcos.serverGroup.region': '(Required) One of the core naming components of a cluster, used to create logical groupings with DCOS (using Marathon groups) of applications (default: "default").',
     'dcos.serverGroup.stack': '(Optional) One of the core naming components of a cluster, used to create vertical stacks of dependent services for integration testing.',
     'dcos.serverGroup.freeFormDetails': '(Optional) A string of free-form alphanumeric characters and hyphens to describe any other variables.',
     'dcos.serverGroup.cpus': 'Amount of CPUs used for the service.',

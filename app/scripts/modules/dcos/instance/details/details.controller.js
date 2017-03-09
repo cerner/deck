@@ -31,8 +31,7 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
 
     $scope.state = {
       loading: true,
-      // TODO not sure what standalone means.
-      //standalone: app.isStandalone,
+      standalone: app.isStandalone,
     };
 
     this.uiLink = function uiLink() {

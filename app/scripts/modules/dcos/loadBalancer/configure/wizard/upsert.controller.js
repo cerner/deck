@@ -158,7 +158,6 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
       this.updateName();
       $scope.taskMonitor.submit(
         function() {
-          // TODO look into this
           var zones = {};
           zones['global'] = ['global'];
           let params = {

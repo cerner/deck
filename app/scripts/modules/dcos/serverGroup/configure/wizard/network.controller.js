@@ -25,7 +25,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.network', 
         port: null,
         name: null,
         protocol: this.serviceEndpointProtocols[0],
-        isLoadBalanced: false,
+        loadBalanced: false,
         exposeToHost: false,
       });
     };

@@ -9,8 +9,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
   ACCOUNT_SERVICE,
   NAMING_SERVICE,
 ])
-  .factory('dcosServerGroupCommandBuilder', function (settings, $q,
-                                                       accountService, namingService) {
+  .factory('dcosServerGroupCommandBuilder', function (settings, $q) {
     function reconcileUpstreamImages(image, upstreamImages) {
         if (image.fromContext) {
           let matchingImage = upstreamImages.find((otherImage) => image.stageId === otherImage.stageId);

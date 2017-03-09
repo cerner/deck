@@ -21,7 +21,7 @@
         </div>
     </div>
     <!--TODO don't like hardcoding the index in here -->
-    <div class="form-group" ng-show="command.networkType === networkController.networkTypes[2]">
+    <div class="form-group" ng-show="command.networkType === networkController.networkTypes[2].type">
         <div class="col-md-3 sm-label-right">
             Network Name
         </div>
@@ -55,7 +55,7 @@
                           <ui-select name="protocolSelect" ng-model="serviceEndpoint.protocol" class="form-control input-sm">
                               <ui-select-match>{{$select.selected}}</ui-select-match>
                               <ui-select-choices
-                                      repeat="protocol in command.serviceEndpointProtocols | filter: $select.search">
+                                      repeat="protocol in networkController.serviceEndpointProtocols | filter: $select.search">
                                   <div ng-bind-html="protocol | highlight: $select.search"></div>
                               </ui-select-choices>
                           </ui-select>
@@ -63,11 +63,10 @@
                     </div>
 
                     <div class="form-group">
-                      <!-- TODO check on this-->
-                      <div ng-show="serviceEndpoint.networkType === command.networkTypes[0]" class="col-md-3 sm-label-right">
+                      <div ng-show="serviceEndpoint.networkType === networkController.networkTypes[0].type" class="col-md-3 sm-label-right">
                           LB Port
                       </div>
-                      <div ng-show="serviceEndpoint.networkType !== command.networkTypes[0]" class="col-md-3 sm-label-right">
+                      <div ng-show="serviceEndpoint.networkType !== networkController.networkTypes[0].type" class="col-md-3 sm-label-right">
                           Container Port
                       </div>
                       <div class="col-md-2">
@@ -81,10 +80,10 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-3 sm-label-right">
+                      <div ng-show="serviceEndpoint.networkType === networkController.networkTypes[2].type" class="col-md-3 sm-label-right">
                           Expose endpoints on host network
                       </div>
-                      <div ng-show="serviceEndpoint.networkType === command.networkTypes[2]" class="col-md-2">
+                      <div ng-show="serviceEndpoint.networkType === networkController.networkTypes[2].type" class="col-md-2 checkbox-inline">
                           <input type="checkbox" name="exposeToHost" ng-model="serviceEndpoint.exposeToHost"/>
                       </div>
                     </div>

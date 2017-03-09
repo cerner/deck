@@ -10,7 +10,7 @@ import {RECENT_HISTORY_SERVICE} from 'core/history/recentHistory.service';
 
 let angular = require('angular');
 
-// NOTE: Instead of using instance.name, we're using instance.taskId. Instance.name is not 
+// NOTE: Instead of using instance.name, we're using instance.taskId. Instance.name is not
 // reliable after a recent gate change that merges account information into instance information - the account name field clobbers
 // the instance name.
 module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [

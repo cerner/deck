@@ -35,7 +35,6 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
       controller.addEnvironmentVariable();
 
       expect(scope.command.viewModel.env.length).toEqual(1);
-      //expect(scope.command.env.length).toEqual(1);
     });
 
     it('Environment Variables spec 2', function () {

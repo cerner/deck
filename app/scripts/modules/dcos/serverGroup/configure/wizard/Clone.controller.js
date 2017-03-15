@@ -67,12 +67,19 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.clone', [
 
     function initializeWizardState() {
       wizardSubFormValidation
-        .config({ scope: $scope, form: 'form' })
-        .register({ page: 'basic-settings', subForm: 'basicSettings'});
+        .config({ scope: $scope, form: 'form'})
+        .register({ page: 'basicSettings', subForm: 'basicSettings' })
+        .register({ page: 'network', subForm: 'networkSettings' })
+        .register({ page: 'containerSettings', subForm: 'containerSettings' })
+        .register({ page: 'environmentVariables', subForm: 'environmentVariables' })
+        .register({ page: 'healthChecks', subForm: 'healthChecks' })
+        .register({ page: 'volumes', subForm: 'volumes' });
     }
 
     this.isValid = function () {
-      return $scope.command && $scope.command.account !== null &&
+      return $scope.command &&
+        $scope.command.account !== null &&
+        $scope.form.$valid &&
         v2modalWizardService.isComplete();
     };
 

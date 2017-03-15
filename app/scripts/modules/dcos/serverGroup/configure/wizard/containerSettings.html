@@ -1,4 +1,5 @@
-<form name="containerSettings" class="container-fluid form-horizontal" ng-controller="dcosServerGroupContainerSettingsController as containerSettingsController" novalidate>
+<ng-form name="containerSettings" novalidate>
+  <div class="container-fluid form-horizontal" ng-controller="dcosServerGroupContainerSettingsController as containerSettingsController">
     <div class="form-group">
         <div class="col-md-3 sm-label-right"><b>Container Image</b>
             <help-field key="dcos.serverGroup.docker.image"></help-field>
@@ -38,4 +39,5 @@
             <map-editor model="command.docker.parameters" allow-empty="true"></map-editor>
         </div>
     </div>
-</form>
+  </div>
+</ng-form>

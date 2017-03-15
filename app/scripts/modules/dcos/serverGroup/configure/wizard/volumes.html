@@ -1,5 +1,6 @@
-<form class="container-fluid form-horizontal" name="form"
-      ng-controller="dcosServerGroupVolumesController as volumeController" novalidate>
+<ng-form name="volumes" novalidate>
+  <div class="container-fluid form-horizontal"
+      ng-controller="dcosServerGroupVolumesController as volumeController">
     <div class="form-group">
         <table class="table table-condensed packed">
             <thead>
@@ -151,4 +152,5 @@
             </tfoot>
         </table>
     </div>
-</form>
+  </div>
+</ng-form>

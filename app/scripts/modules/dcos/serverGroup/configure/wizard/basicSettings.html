@@ -1,5 +1,5 @@
-<ng-form name="basicSettings" class="container-fluid form-horizontal"
-         ng-controller="dcosServerGroupBasicSettingsController as basicSettingsController" novalidate>
+<ng-form name="basicSettings" novalidate>
+  <div class="container-fluid form-horizontal" ng-controller="dcosServerGroupBasicSettingsController as basicSettingsController" >
     <div class="form-group">
       <div class="col-md-3 sm-label-right">
           <b>Account</b>
@@ -18,8 +18,14 @@
       <div class="col-md-7"><input type="text"
                                     class="form-control input-sm"
                                     name="region"
+                                    ng-pattern="basicSettingsController.regionPattern"
                                     ng-model="command.region"
                                     placeholder="default"/></div>
+    </div>
+    <div class="form-group row slide-in" ng-if="basicSettings.region.$error.pattern">
+      <div class="col-sm-9 col-sm-offset-2 error-message">
+        <span>Region can only contain lowercase letters, numbers, dashes(-) and forward slashes(/).</span>
+      </div>
     </div>
 
     <div class="form-group">
@@ -34,9 +40,9 @@
                                     ng-model="command.stack"/></div>
     </div>
     <div class="form-group row slide-in" ng-if="basicSettings.stack.$error.pattern">
-        <div class="col-sm-9 col-sm-offset-2 error-message">
-            <span>Only dot(.) and underscore(_) special characters are allowed in the Stack field.</span>
-        </div>
+      <div class="col-sm-9 col-sm-offset-2 error-message">
+        <span>Stack can only contain lowercase letters and numbers.</span>
+      </div>
     </div>
     <div class="form-group">
       <div class="col-md-3 sm-label-right">
@@ -48,10 +54,10 @@
                                     name="freeFormDetails"
                                     ng-model="command.freeFormDetails"/></div>
     </div>
-    <div class="form-group row slide-in" ng-if="basicSettings.details.$error.pattern">
-        <div class="col-sm-9 col-sm-offset-2 error-message">
-            <span>Only dot(.), underscore(_), and dash(-) special characters are allowed in the Detail field.</span>
-        </div>
+    <div class="form-group row slide-in" ng-if="basicSettings.freeFormDetails.$error.pattern">
+      <div class="col-sm-9 col-sm-offset-2 error-message">
+        <span>Detail can only contain lowercase letters, numbers, and dashes(-).</span>
+      </div>
     </div>
     <div class="form-group">
       <div class="col-md-3 sm-label-right">
@@ -60,7 +66,7 @@
       </div>
       <div class="col-md-2">
           <input type="number" class="form-control input-sm" name="cpus" ng-model="command.cpus"
-                  min="0.01"/>
+                  min="0.01" required/>
       </div>
       <div class="col-md-3 sm-label-right">
           GPUs
@@ -77,7 +83,7 @@
       </div>
       <div class="col-md-2">
           <input type="number" class="form-control input-sm" name="mem" ng-model="command.mem"
-                  min="1"/>
+                  min="1" required/>
       </div>
       <div class="col-md-3 sm-label-right">
           Disk (MiB)
@@ -143,4 +149,5 @@
             </div>
         </div>
     </div>
+  </div>
 </ng-form>

@@ -11,9 +11,9 @@ module.exports = angular
   .factory('dcosApplicationNameValidator', function () {
 
     function validateSpecialCharacters(name, errors) {
-      let pattern = /^([a-zA-Z][a-zA-Z_0-9]*)?$/;
+      let pattern = /^[a-z0-9]+$/;
       if (!pattern.test(name)) {
-        errors.push('The application name must begin with a letter and must contain only letters or digits. No ' +
+        errors.push('The application name can only contain lowercase letters and digits. No other ' +
           'special characters are allowed.');
       }
     }

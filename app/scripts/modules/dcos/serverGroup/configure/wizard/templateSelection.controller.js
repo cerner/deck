@@ -37,6 +37,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.templateSe
       command.viewState.disableImageSelection = true;
       command.viewState.disableStrategySelection = $scope.command.viewState.disableStrategySelection || false;
       command.viewState.submitButtonLabel = 'Add';
+      command.viewState.templatingEnabled = true;
       angular.copy(command, $scope.command);
     }
 

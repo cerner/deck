@@ -19,6 +19,8 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.optional',
       }
     };
 
+    $scope.command.viewModel.fetch = null;
+
     // Init fetch from model
     if ($scope.command.fetch) {
       $scope.command.viewModel.fetch = $scope.command.fetch.map(fetchObj => fetchObj['uri']).join(',');

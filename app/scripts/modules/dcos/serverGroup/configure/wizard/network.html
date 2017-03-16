@@ -26,7 +26,7 @@
         Network Name
       </div>
       <div class="col-md-4">
-        <input type="text" class="form-control input-sm" name="networkName" ng-model="command.networkName" ng-required="networkController.isUserNetwork(command.networkType)"
+        <input type="text" class="form-control input-sm highlight-pristine" name="networkName" ng-model="command.networkName" ng-required="networkController.isUserNetwork(command.networkType)"
         />
       </div>
     </div>
@@ -70,9 +70,8 @@
                   Container Port
                 </div>
                 <div class="col-md-2">
-                  <input type="number" class="form-control input-sm" name="port" ng-model="serviceEndpoint.port" min="0" ng-required="!networkController.isHostNetwork(serviceEndpoint) ||
-                                    (networkController.isHostNetwork(serviceEndpoint) && serviceEndpoint.loadBalanced)"
-                  />
+                  <input type="number" class="form-control input-sm highlight-pristine" name="port" ng-model="serviceEndpoint.port" min="0" ng-required="!networkController.isHostNetwork(serviceEndpoint) ||
+                                    serviceEndpoint.loadBalanced)"/>
                 </div>
                 <div class="col-md-3 sm-label-right">
                   Load Balanced

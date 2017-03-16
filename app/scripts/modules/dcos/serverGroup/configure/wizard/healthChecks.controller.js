@@ -6,17 +6,33 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChec
 ])
   .controller('dcosServerGroupHealthChecksController', function($scope) {
 
-    this.healthCheckProtocols = ['HTTP', 'COMMAND', 'TCP'];
+    var HTTP_PROTOCOL = 'HTTP';
+    var COMMAND_PROTOCOL = 'COMMAND';
+    var TCP_PROTOCOL = 'TCP';
+
+    this.healthCheckProtocols = [HTTP_PROTOCOL, COMMAND_PROTOCOL, TCP_PROTOCOL];
     this.healthCheckPortTypes = ['Port Index', 'Port Number'];
 
     $scope.command.healthChecks.forEach((hc) => {
       hc.portType = hc.port ? this.healthCheckPortTypes[1] : this.healthCheckPortTypes[0];
     });
 
+    this.isHttpProtocol = function(healthCheck) {
+      return healthCheck.protocol === HTTP_PROTOCOL;
+    };
+
+    this.isCommandProtocol = function(healthCheck) {
+      return healthCheck.protocol === COMMAND_PROTOCOL;
+    };
+
+    this.isTcpProtocol = function(healthCheck) {
+      return healthCheck.protocol === TCP_PROTOCOL;
+    };
+
     // TODO can be smarter about this based on current ports defined
     this.addHealthCheck = function() {
       $scope.command.healthChecks.push({
-        protocol: this.healthCheckProtocols[0],
+        protocol: HTTP_PROTOCOL,
         path: null,
         command: null,
         gracePeriodSeconds: null,

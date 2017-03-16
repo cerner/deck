@@ -14,4 +14,5 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos', [
   require('./wizard/network.controller.js'),
   require('./wizard/templateSelection.controller.js'),
   require('./wizard/volumes.controller.js'),
+  require('./wizard/optional.controller.js')
 ]);

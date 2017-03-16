@@ -1,43 +1,42 @@
 <ng-form name="containerSettings" novalidate>
   <div class="container-fluid form-horizontal" ng-controller="dcosServerGroupContainerSettingsController as containerSettingsController">
     <div class="form-group">
-        <div class="col-md-3 sm-label-right"><b>Container Image</b>
-            <help-field key="dcos.serverGroup.docker.image"></help-field>
-        </div>
-        <div class="col-md-9">
-            <ui-select name="imageSelect" ng-model="command.docker.image" class="form-control input-sm" required>
-                <ui-select-match placeholder="Please type your search...">{{$select.selected.imageId}}</ui-select-match>
-                <ui-select-choices
-                        repeat="image in command.backingData.mapped.images"
-                        group-by="containerSettingsController.groupByRegistry"
-                        refresh-delay="0"
-                        refresh="containerSettingsController.searchImages($select.search)">
-                    <span ng-bind-html="image.imageId | highlight: $select.search"></span>
-                </ui-select-choices>
-            </ui-select>
-        </div>
-    </div>
-    <div class="form-group">
-      <div class="col-md-3 sm-label-right">
-          Extend runtime privs
+      <div class="col-md-3 sm-label-right"><b>Container Image</b>
+        <help-field key="dcos.serverGroup.docker.image"></help-field>
       </div>
-      <div class="col-md-1 checkbox-inline">
-          <input type="checkbox" name="privilegedCheck" ng-model="command.docker.privileged"/>
-      </div>
-      <div class="col-md-3 sm-label-right">
-          Force pull image
-      </div>
-      <div class="col-md-1 checkbox-inline">
-          <input type="checkbox" name="forcePullCheck" ng-model="command.docker.forcePullImage"/>
+      <div class="col-md-9">
+        <ui-select name="imageSelect" ng-model="command.docker.image" class="form-control input-sm" required>
+          <ui-select-match placeholder="Please type your search...">{{$select.selected.imageId}}</ui-select-match>
+          <ui-select-choices repeat="image in command.backingData.mapped.images"
+                             group-by="containerSettingsController.groupByRegistry"
+                             refresh-delay="0"
+                             refresh="containerSettingsController.searchImages($select.search)">
+            <span ng-bind-html="image.imageId | highlight: $select.search"></span>
+          </ui-select-choices>
+        </ui-select>
       </div>
     </div>
     <div class="form-group">
-        <div class="col-sm-3 sm-label-right">
-            <b>Docker Parameters</b>
-        </div>
-        <div class="col-sm-9">
-            <map-editor model="command.docker.parameters" allow-empty="true"></map-editor>
-        </div>
+      <div class="col-md-3 sm-label-right">
+        Extend runtime privs
+      </div>
+      <div class="col-md-1 checkbox-inline">
+        <input type="checkbox" name="privilegedCheck" ng-model="command.docker.privileged" />
+      </div>
+      <div class="col-md-3 sm-label-right">
+        Force pull image
+      </div>
+      <div class="col-md-1 checkbox-inline">
+        <input type="checkbox" name="forcePullCheck" ng-model="command.docker.forcePullImage" />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-3 sm-label-right">
+        <b>Docker Parameters</b>
+      </div>
+      <div class="col-sm-9">
+        <map-editor model="command.docker.parameters" allow-empty="true"></map-editor>
+      </div>
     </div>
   </div>
 </ng-form>

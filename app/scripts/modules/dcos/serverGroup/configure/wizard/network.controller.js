@@ -6,16 +6,28 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.network', 
 ])
   .controller('dcosServerGroupNetworkController', function($scope) {
 
+    var HOST_NETWORK = 'HOST';
+    var BRIDGE_NETWORK = 'BRIDGE';
+    var USER_NETWORK = 'USER';
+
     this.networkTypes = [{
-        type: 'HOST',
+        type: HOST_NETWORK,
         name: 'Host'
       }, {
-        type: 'BRIDGE',
+        type: BRIDGE_NETWORK,
         name: 'Bridge'
       }, {
-        type: 'USER',
+        type: USER_NETWORK,
         name: 'Virtual'
     }];
+
+    this.isHostNetwork = function(serviceEndpoint) {
+      return serviceEndpoint === HOST_NETWORK || serviceEndpoint.networkType === HOST_NETWORK;
+    };
+
+    this.isUserNetwork = function(serviceEndpoint) {
+      return serviceEndpoint === USER_NETWORK || serviceEndpoint.networkType === USER_NETWORK;
+    };
 
     this.serviceEndpointProtocols = ['tcp', 'udp', 'udp,tcp'];
 

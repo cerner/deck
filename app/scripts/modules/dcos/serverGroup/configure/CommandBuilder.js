@@ -9,7 +9,27 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
   ACCOUNT_SERVICE,
   NAMING_SERVICE,
 ])
-  .factory('dcosServerGroupCommandBuilder', function (settings, $q) {
+  .factory('dcosServerGroupCommandBuilder', function (settings, accountService, $q) {
+    function attemptToSetValidAccount(application, defaultAccount, command) {
+      return accountService.listAccounts('dcos').then(function(dcosAccounts) {
+        var dcosAccountNames = _.map(dcosAccounts, 'name');
+        var firstDcosAccount = null;
+
+        if (application.accounts.length) {
+          firstDcosAccount = _.find(application.accounts, function (applicationAccount) {
+            return dcosAccountNames.includes(applicationAccount);
+          });
+        } else if (dcosAccountNames.length) {
+          firstDcosAccount = dcosAccountNames[0];
+        }
+
+        var defaultAccountIsValid = defaultAccount && dcosAccountNames.includes(defaultAccount);
+
+        command.account =
+          defaultAccountIsValid ? defaultAccount : (firstDcosAccount ? firstDcosAccount : 'my-account-name');
+      });
+    }
+
     function reconcileUpstreamImages(image, upstreamImages) {
         if (image.fromContext) {
           let matchingImage = upstreamImages.find((otherImage) => image.stageId === otherImage.stageId);
@@ -82,12 +102,11 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
     }
 
     function buildNewServerGroupCommand(application, defaults = {}) {
-      var defaultCredentials = defaults.account || settings.providers.dcos.defaults.account;
+      var defaultAccount = defaults.account || settings.providers.dcos.defaults.account;
       var defaultRegion = defaults.region || settings.providers.dcos.defaults.region;
 
       var command = {
-        credentials: defaultCredentials,
-        account: defaultCredentials,
+        account: defaultAccount,
         region: defaultRegion,
         application: application.name,
         stack: '',
@@ -130,6 +149,8 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         selectedProvider: 'dcos',
         viewModel: {}
       };
+
+      attemptToSetValidAccount(application, defaultAccount, command);
 
       return $q.when(command);
     }

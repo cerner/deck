@@ -7,6 +7,7 @@ import {LOAD_BALANCER_READ_SERVICE} from 'core/loadBalancer/loadBalancer.read.se
 import {LOAD_BALANCER_WRITE_SERVICE} from 'core/loadBalancer/loadBalancer.write.service';
 import {V2_MODAL_WIZARD_SERVICE} from 'core/modal/wizard/v2modalWizard.service';
 import {TASK_MONITOR_BUILDER} from 'core/task/monitor/taskMonitor.builder';
+import {SEARCH_SERVICE} from 'core/search/search.service';
 
 module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller', [
   require('angular-ui-router'),
@@ -15,7 +16,7 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
   ACCOUNT_SERVICE,
   V2_MODAL_WIZARD_SERVICE,
   TASK_MONITOR_BUILDER,
-  require('core/search/search.service.js'),
+  SEARCH_SERVICE,
   require('../../transformer.js'),
 ])
   .controller('dcosUpsertLoadBalancerController', function($scope, $uibModalInstance, $state,

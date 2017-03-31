@@ -2,15 +2,15 @@
 
 let angular = require('angular');
 
-module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [
-  require('core/config/settings.js'),
-])
-  .factory('dcosProxyUiService', function(settings) {
+import {DcosProviderSettings} from '../dcos.settings';
+
+module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [])
+  .factory('dcosProxyUiService', function() {
     let apiPrefix = '#';
 
     function getHost(accountName) {
-      let host = settings.providers.dcos.defaults.proxy;
-      let account = settings.providers.dcos[accountName];
+      let host = DcosProviderSettings.defaults.proxy;
+      let account = DcosProviderSettings[accountName];
 
       if (account && account.proxy) {
         host = account.proxy;

@@ -3,13 +3,12 @@
 let angular = require('angular');
 
 import {ACCOUNT_SERVICE} from 'core/account/account.service';
-import {NAMING_SERVICE} from 'core/naming/naming.service';
+import {DcosProviderSettings} from '../../dcos.settings';
 
 module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.service', [
-  ACCOUNT_SERVICE,
-  NAMING_SERVICE,
+  ACCOUNT_SERVICE
 ])
-  .factory('dcosServerGroupCommandBuilder', function (settings, accountService, $q) {
+  .factory('dcosServerGroupCommandBuilder', function (accountService, $q) {
     function attemptToSetValidAccount(application, defaultAccount, command) {
       return accountService.listAccounts('dcos').then(function(dcosAccounts) {
         var dcosAccountNames = _.map(dcosAccounts, 'name');
@@ -102,8 +101,8 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
     }
 
     function buildNewServerGroupCommand(application, defaults = {}) {
-      var defaultAccount = defaults.account || settings.providers.dcos.defaults.account;
-      var defaultRegion = defaults.region || settings.providers.dcos.defaults.region;
+      var defaultAccount = defaults.account || DcosProviderSettings.defaults.account;
+      var defaultRegion = defaults.region || DcosProviderSettings.defaults.region;
 
       var command = {
         account: defaultAccount,

@@ -4,8 +4,10 @@ import _ from 'lodash';
 
 let angular = require('angular');
 
+import {DcosProviderSettings} from '../dcos.settings';
+
 module.exports = angular.module('spinnaker.dcos.loadBalancer.transformer', [])
-  .factory('dcosLoadBalancerTransformer', function ($q, settings) {
+  .factory('dcosLoadBalancerTransformer', function ($q) {
     function normalizeLoadBalancer(loadBalancer) {
       loadBalancer.provider = loadBalancer.type;
       loadBalancer.instances = [];
@@ -55,7 +57,7 @@ module.exports = angular.module('spinnaker.dcos.loadBalancer.transformer', [])
           minPort: 10000,
           maxPort: 10100
         },
-        credentials: settings.providers.dcos ? settings.providers.dcos.defaults.account : null,
+        account: DcosProviderSettings.defaults.account,
       };
     }
 

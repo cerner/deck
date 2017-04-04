@@ -12,7 +12,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
 ])
   .factory('dcosServerGroupConfigurationService', function($q, accountService, dcosImageReader) {
     function configureCommand(application, command, query = '') {
-      let queries = command.image != null && command.image !== undefined ? [command.image.imageId] : [];
+      let queries = command.docker.image ? [grabImageAndTag(command.docker.image.imageId)] : [];
 
       if (query) {
         queries.push(query);
@@ -34,33 +34,10 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
         accounts: accountService.listAccounts('dcos'),
         allImages: imagesPromise
       }).then(function(backingData) {
-        backingData.mapped = {
-          images: []
-        };
+        backingData.filtered = {};
 
         if (command.viewState.contextImages) {
           backingData.allImages = backingData.allImages.concat(command.viewState.contextImages);
-        }
-
-        if (backingData.allImages) {
-          backingData.mapped.images = _.map(backingData.allImages, function(image) {
-            if (image.message !== undefined) {
-              return image;
-            }
-
-            return {
-              repository: image.repository,
-              tag: image.tag,
-              imageId: buildImageId(image),
-              registry: image.registry,
-              fromContext: image.fromContext,
-              fromTrigger: image.fromTrigger,
-              cluster: image.cluster,
-              account: image.account,
-              pattern: image.pattern,
-              stageId: image.stageId,
-            };
-          });
         }
 
         command.backingData = backingData;
@@ -77,6 +54,10 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
       });
     }
 
+    function grabImageAndTag(imageId) {
+      return imageId.split('/').pop();
+    }
+
     function buildImageId(image) {
       if (image.fromContext) {
         return `${image.cluster} ${image.pattern}`;
@@ -87,18 +68,68 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
       }
     }
 
+    function configureDockerRegistries(command) {
+      var result = { dirty: {} };
+      command.backingData.filtered.dockerRegistries = command.backingData.account.dockerRegistries;
+      return result;
+    }
+
+    function configureImages(command) {
+      var result = { dirty: {} };
+
+      if (!command.account) {
+        command.backingData.filtered.images = [];
+      } else {
+        var registryAccountNames = _.map(command.backingData.account.dockerRegistries, function(registry) {
+          return registry.accountName;
+        });
+        command.backingData.filtered.images = _.map(_.filter(command.backingData.allImages, function(image) {
+          return image.fromContext || image.fromTrigger || _.includes(registryAccountNames, image.account) || image.message;
+        }), function(image) {
+          return mapImage(image);
+        });
+
+        if (command.docker.image && !_.some(command.backingData.filtered.images, {imageId: command.docker.image.imageId})) {
+          result.dirty.imageId = command.docker.image.imageId;
+          command.docker.image = null;
+        }
+      }
+
+      return result;
+    }
+
+    function mapImage(image) {
+      if (image.message !== undefined) {
+        return image;
+      }
+
+      return {
+        repository: image.repository,
+        tag: image.tag,
+        imageId: buildImageId(image),
+        registry: image.registry,
+        fromContext: image.fromContext,
+        fromTrigger: image.fromTrigger,
+        cluster: image.cluster,
+        account: image.account,
+        pattern: image.pattern,
+        stageId: image.stageId,
+      };
+    }
+
     function configureAccount(command) {
       var result = { dirty: {} };
 
-      // TODO refresh docker registries on account change?
-
       command.backingData.account = command.backingData.accountMap[command.account];
+      if (command.backingData.account) {
+        angular.extend(result.dirty, configureDockerRegistries(command).dirty);
+        angular.extend(result.dirty, configureImages(command).dirty);
+      }
 
       return result;
     }
 
     function attachEventHandlers(command) {
-
       command.accountChanged = function accountChanged() {
         var result = { dirty: {} };
         angular.extend(result.dirty, configureAccount(command).dirty);
@@ -111,6 +142,8 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
     return {
       configureCommand: configureCommand,
       configureAccount: configureAccount,
-      buildImageId: buildImageId,
+      configureImages: configureImages,
+      configureDockerRegistries: configureDockerRegistries,
+      buildImageId: buildImageId
     };
   });

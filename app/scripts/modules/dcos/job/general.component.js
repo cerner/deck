@@ -12,5 +12,12 @@ module.exports = angular.module('spinnaker.deck.dcos.general.component', [])
       if (this.general === undefined || this.general == null) {
         this.general = {};
       }
+
+      this.idPattern = {
+        test: function(id) {
+          var pattern = /^([a-z0-9]*(\${.+})*)*$/;
+          return pattern.test(id);
+        }
+      };
     }
   });

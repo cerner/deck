@@ -8,19 +8,20 @@ describe('dcosServerGroupCommandBuilder', function() {
     )
   );
 
-  beforeEach(window.inject(function(dcosServerGroupCommandBuilder, accountService, namingService, $q, $rootScope, _settings_) {
+  beforeEach(window.inject(function(dcosServerGroupCommandBuilder, accountService, $q, $rootScope) {
     this.dcosServerGroupCommandBuilder = dcosServerGroupCommandBuilder;
     this.$scope = $rootScope;
     this.$q = $q;
-    this.settings = _settings_;
     this.accountService = accountService;
-    this.namingService = namingService;
+    spyOn(this.accountService, 'listAccounts').and.returnValue(
+      $q.when(['test'])
+    );
   }));
 
   describe('buildNewServerGroupCommand', function() {
     it('should initializes to default values', function () {
       var command = null;
-      this.dcosServerGroupCommandBuilder.buildNewServerGroupCommand({ name: 'dcosApp' }).then(function(result) {
+      this.dcosServerGroupCommandBuilder.buildNewServerGroupCommand({ name: 'dcosApp', accounts: ['test'] }).then(function(result) {
         command = result;
       });
 
@@ -31,8 +32,6 @@ describe('dcosServerGroupCommandBuilder', function() {
 
   describe('buildServerGroupCommandFromExisting', function () {
     it('should use base server group otherwise use the default', function() {
-      spyOn(this.namingService, 'parseServerGroupName').and.returnValue(this.$q.when('dcosApp-test-test'));
-
       var baseServerGroup = {};
       baseServerGroup.deployDescription = {
         account: 'prod',

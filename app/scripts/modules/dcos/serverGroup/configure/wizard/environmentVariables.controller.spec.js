@@ -15,7 +15,7 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
     scope = $rootScope.$new();
 
     scope.command = {};
-    scope.command.secrets = []
+    scope.command.secrets = [];
     scope.command.viewModel = {};
 
     controller = $controller('dcosServerGroupEnvironmentVariablesController', {
@@ -27,7 +27,7 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
 
     beforeEach(function() {
       scope.command.env = {};
-      scope.command.secrets = []
+      scope.command.secrets = [];
       scope.command.viewModel.env = [];
     });
 

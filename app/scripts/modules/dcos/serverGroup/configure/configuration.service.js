@@ -35,6 +35,11 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
         allImages: imagesPromise
       }).then(function(backingData) {
         backingData.filtered = {};
+        backingData.allSecrets = {};
+
+        if (application.attributes && application.attributes.secrets) {
+          backingData.allSecrets = JSON.parse(application.attributes.secrets);
+        }
 
         if (command.viewState.contextImages) {
           backingData.allImages = backingData.allImages.concat(command.viewState.contextImages);
@@ -117,6 +122,34 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
       };
     }
 
+    function configureSecrets(command) {
+      var result = { dirty: {} };
+      if (!command.account || !command.backingData.allSecrets[command.account]) {
+        command.backingData.filtered.secrets = [];
+      } else {
+        var region = command.region || 'default';
+        var appPath = command.account + '/' + region + '/';
+
+        command.backingData.filtered.secrets = _.filter(command.backingData.allSecrets[command.account].sort(), function (secret) {
+          var secretPath = secret.substring(0, secret.lastIndexOf('/') + 1);
+          return appPath.startsWith(secretPath);
+        });
+      }
+
+      if (command.viewModel.env) {
+        command.viewModel.env.forEach(function(envModel) {
+          if (envModel.isSecret && envModel.rawValue != null && !command.backingData.filtered.secrets.includes(envModel.rawValue)) {
+            result.dirty.secrets = result.dirty.secrets || [];
+            result.dirty.secrets.push(envModel.rawValue);
+            envModel.rawValue = null;
+            envModel.value = null;
+          }
+        });
+      }
+
+      return result;
+    }
+
     function configureAccount(command) {
       var result = { dirty: {} };
 
@@ -124,6 +157,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
       if (command.backingData.account) {
         angular.extend(result.dirty, configureDockerRegistries(command).dirty);
         angular.extend(result.dirty, configureImages(command).dirty);
+        angular.extend(result.dirty, configureSecrets(command).dirty);
       }
 
       return result;
@@ -137,6 +171,14 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
         angular.extend(command.viewState.dirty, result.dirty);
         return result;
       };
+
+      command.regionChanged = function regionChanged() {
+        var result = { dirty: {} };
+        angular.extend(result.dirty, configureSecrets(command).dirty);
+        command.viewState.dirty = command.viewState.dirty || {};
+        angular.extend(command.viewState.dirty, result.dirty);
+        return result;
+      };
     }
 
     return {
@@ -144,6 +186,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
       configureAccount: configureAccount,
       configureImages: configureImages,
       configureDockerRegistries: configureDockerRegistries,
+      configureSecrets: configureSecrets,
       buildImageId: buildImageId
     };
   });

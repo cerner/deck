@@ -41,7 +41,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
     };
 
     this.updateValue = function(index) {
-      if ($scope.command.viewModel.env[index].secret === true) {
+      if ($scope.command.viewModel.env[index].isSecret === true) {
         $scope.command.secrets['secret' + index].source = $scope.command.viewModel.env[index].rawValue;
       } else {
         $scope.command.viewModel.env[index].value = $scope.command.viewModel.env[index].rawValue;
@@ -58,8 +58,9 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
     };
 
     this.addSecret = function(index) {
+      $scope.command.viewModel.env[index].rawValue = null;
       $scope.command.secrets['secret' + index] = {
-          'source': $scope.command.viewModel.env[index].value
+          'source': null
       };
 
       $scope.command.viewModel.env[index].value = {
@@ -68,10 +69,9 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
     };
 
     this.removeSecret = function(index) {
-      $scope.command.viewModel.env[index].value =
-        $scope.command.secrets['secret' + index].source;
-
-        delete $scope.command.secrets['secret' + index];
+      $scope.command.viewModel.env[index].value = null;
+      $scope.command.viewModel.env[index].rawValue = null;
+      delete $scope.command.secrets['secret' + index];
     };
 
     this.synchronize = () => {

@@ -71,7 +71,7 @@ describe('dcosServerGroupEnvironmentVariablesController', function() {
       controller.synchronize();
 
       expect(scope.command.viewModel.env.length).toEqual(1);
-      expect(scope.command.env['Key']).toEqual('Value');
+      expect(scope.command.env['Key']).toEqual(null);
 
       expect(Object.keys(scope.command.secrets).length).toEqual(0);
     });

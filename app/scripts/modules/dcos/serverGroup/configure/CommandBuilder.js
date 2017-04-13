@@ -25,7 +25,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         var defaultAccountIsValid = defaultAccount && dcosAccountNames.includes(defaultAccount);
 
         command.account =
-          defaultAccountIsValid ? defaultAccount : (firstDcosAccount ? firstDcosAccount : 'my-account-name');
+          defaultAccountIsValid ? defaultAccount : (firstDcosAccount ? firstDcosAccount : 'my-dcos-account');
       });
     }
 
@@ -105,7 +105,6 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
       var defaultRegion = defaults.region || DcosProviderSettings.defaults.region;
 
       var command = {
-        account: defaultAccount,
         region: defaultRegion,
         application: application.name,
         stack: '',

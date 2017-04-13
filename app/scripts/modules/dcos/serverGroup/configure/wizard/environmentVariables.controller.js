@@ -9,7 +9,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
     $scope.command.viewModel.env = [];
 
     // init from the model
-    if ($scope.command.env) {
+    if ($scope.command.env && !(typeof $scope.command.env === 'string' || $scope.command.env instanceof String)) {
       Object.keys($scope.command.env).forEach((key) => {
 
         let val = $scope.command.env[key];
@@ -76,7 +76,8 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
 
     this.synchronize = () => {
       let allNames = $scope.command.viewModel.env.map((item) => item.name);
-      Object.keys($scope.command.env).forEach((key) => delete $scope.command.env[key]);
+
+      $scope.command.env = {};
 
       $scope.command.viewModel.env.forEach((item) => {
         if (item.name) {

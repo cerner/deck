@@ -23,10 +23,10 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [])
       return host;
     }
 
-    function buildLink(accountName, kind, region, name, taskName = null) {
+    function buildLink(accountName, region, name, taskName = null) {
 
       let host = getHost(accountName);
-      let link = host + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + accountName + '/' + region.replace('_', '/') + '/') + name;
+      let link = host + '/' + apiPrefix + '/services/overview/' + encodeURIComponent('/' + accountName + '/' + region.replace('_', '/') + '/') + name;
       if (taskName) {
         link = link + '/tasks/' + taskName;
       }
@@ -34,8 +34,8 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [])
       return link;
     }
 
-    function buildLoadBalancerLink(accountName, kind, name) {
-      return getHost(accountName) + '/' + apiPrefix + '/' + kind.toLowerCase() + '/' + encodeURIComponent('/' + accountName + '/') + name;
+    function buildLoadBalancerLink(accountName, name) {
+      return getHost(accountName) + '/' + apiPrefix + '/services/overview/' + encodeURIComponent('/' + accountName + '/') + name;
     }
 
     return {

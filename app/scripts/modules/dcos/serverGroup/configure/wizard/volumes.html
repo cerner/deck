@@ -8,7 +8,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="volume in command.persistentVolumes">
+          <tr ng-repeat="volume in command.persistentVolumes" ng-show="volumeController.isVolumesValid(command.persistentVolumes)">
             <td>
               <div class="form-group">
                 <div class="col-md-3 sm-label-right">
@@ -50,7 +50,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="volume in command.dockerVolumes">
+          <tr ng-repeat="volume in command.dockerVolumes" ng-show="volumeController.isVolumesValid(command.dockerVolumes)">
             <td>
               <div class="form-group">
                 <div class="col-md-3 sm-label-right">
@@ -102,7 +102,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="volume in command.externalVolumes">
+          <tr ng-repeat="volume in command.externalVolumes" ng-show="volumeController.isVolumesValid(command.externalVolumes)">
             <td>
               <div class="form-group">
                 <div class="col-md-3 sm-label-right">

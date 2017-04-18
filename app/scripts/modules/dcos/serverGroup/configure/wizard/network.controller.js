@@ -29,9 +29,17 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.network', 
       return serviceEndpoint === USER_NETWORK || serviceEndpoint.networkType === USER_NETWORK;
     };
 
+    this.isServiceEndpointsValid = function(serviceEndpoints) {
+      return !(typeof serviceEndpoints === 'string' || serviceEndpoints instanceof String);
+    };
+
     this.serviceEndpointProtocols = ['tcp', 'udp', 'udp,tcp'];
 
     this.addServiceEndpoint = function() {
+      if (!this.isServiceEndpointsValid($scope.command.serviceEndpoints)) {
+        $scope.command.serviceEndpoints = [];
+      }
+
       $scope.command.serviceEndpoints.push({
         networkType: $scope.command.networkType,
         port: null,

@@ -17,7 +17,15 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', 
         }
     ];
 
+    this.isVolumesValid = function(volumes) {
+      return !(volumes === undefined || volumes == null || typeof volumes === 'string' || volumes instanceof String);
+    };
+
     this.addPersistentVolume = function() {
+      if (!this.isVolumesValid($scope.command.persistentVolumes)) {
+        $scope.command.persistentVolumes = [];
+      }
+
       $scope.command.persistentVolumes.push({
         containerPath: null,
         persistent: {
@@ -32,6 +40,10 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', 
     };
 
     this.addDockerVolume = function() {
+      if (!this.isVolumesValid($scope.command.dockerVolumes)) {
+        $scope.command.dockerVolumes = [];
+      }
+
       $scope.command.dockerVolumes.push({
         containerPath: null,
         hostPath: null,
@@ -44,6 +56,10 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.volumes', 
     };
 
     this.addExternalVolume = function() {
+      if (!this.isVolumesValid($scope.command.externalVolumes)) {
+        $scope.command.externalVolumes = [];
+      }
+
       $scope.command.externalVolumes.push({
         containerPath: null,
         external: {

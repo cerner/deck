@@ -5,7 +5,7 @@
     </h5>
     <table class="table table-condensed packed">
       <tbody>
-        <tr ng-repeat="healthCheck in command.healthChecks">
+        <tr ng-repeat="healthCheck in command.healthChecks" ng-show="healthCheckController.isHealthChecksValid(command.healthChecks)">
           <td>
             <div class="form-group">
               <div class="col-md-3 sm-label-right">

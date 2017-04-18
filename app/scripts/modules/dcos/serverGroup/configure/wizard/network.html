@@ -39,7 +39,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="serviceEndpoint in command.serviceEndpoints">
+          <tr ng-repeat="serviceEndpoint in command.serviceEndpoints" ng-show="networkController.isServiceEndpointsValid(command.serviceEndpoints)">
             <td>
               <div class="form-group">
                 <div class="col-md-3 sm-label-right">

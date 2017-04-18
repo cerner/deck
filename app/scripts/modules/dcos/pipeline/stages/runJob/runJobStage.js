@@ -39,12 +39,6 @@ module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.runJobStage'
     this.stage.cloudProvider = 'dcos';
     this.stage.application = $scope.application.name;
 
-    if (this.docker === undefined || this.docker == null) {
-      this.stage.docker = {
-        image: {}
-      };
-    }
-
     if (!this.stage.credentials && $scope.application.defaultCredentials.dcos) {
       this.stage.credentials = $scope.application.defaultCredentials.dcos;
     }

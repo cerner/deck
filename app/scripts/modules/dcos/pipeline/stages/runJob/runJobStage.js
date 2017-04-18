@@ -9,7 +9,8 @@ import {DOCKER_IMAGE_AND_TAG_SELECTOR_COMPONENT} from 'docker/image/dockerImageA
 module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.runJobStage', [
   DOCKER_IMAGE_AND_TAG_SELECTOR_COMPONENT,
   require('dcos/job/general.component.js'),
-  require('dcos/job/schedule.component.js'),
+  //TODO Add back when scheduled jobs are supported better by Spinnaker
+  //require('dcos/job/schedule.component.js'),
   require('dcos/job/labels.component.js'),
   require('./runJobExecutionDetails.controller.js')
 ])

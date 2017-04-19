@@ -10,7 +10,12 @@ module.exports = angular.module('spinnaker.deck.dcos.general.component', [])
     templateUrl: require('./general.component.html'),
     controller: function () {
       if (this.general === undefined || this.general == null) {
-        this.general = {};
+        this.general = {
+          cpus: 0.01,
+          gpus: 0.0,
+          mem: 128,
+          disk: 0,
+        };
       }
 
       this.idPattern = {

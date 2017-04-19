@@ -13,7 +13,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
     };
 
     // init from the model
-    if ($scope.command.env && isEnvironmentValid($scope.command.env)) {
+    if ($scope.command.env && this.isEnvironmentValid($scope.command.env)) {
       Object.keys($scope.command.env).forEach((key) => {
 
         let val = $scope.command.env[key];
@@ -32,7 +32,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.environmen
     }
 
     this.addEnvironmentVariable = function() {
-      if (!isEnvironmentValid($scope.command.env)) {
+      if (!this.isEnvironmentValid($scope.command.env)) {
         $scope.command.env = {};
       }
 

@@ -13,7 +13,11 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChec
     this.healthCheckProtocols = [HTTP_PROTOCOL, COMMAND_PROTOCOL, TCP_PROTOCOL];
     this.healthCheckPortTypes = ['Port Index', 'Port Number'];
 
-    if (typeof $scope.command.healthChecks !== 'string') {
+    this.isHealthChecksValid = function(healthChecks) {
+      return !(typeof healthChecks === 'string' || healthChecks instanceof String);
+    };
+
+    if (this.isHealthChecksValid($scope.command.healthChecks)) {
       $scope.command.healthChecks.forEach((hc) => {
         hc.portType = hc.port ? this.healthCheckPortTypes[1] : this.healthCheckPortTypes[0];
       });
@@ -29,10 +33,6 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChec
 
     this.isTcpProtocol = function(healthCheck) {
       return healthCheck.protocol === TCP_PROTOCOL;
-    };
-
-    this.isHealthChecksValid = function(healthChecks) {
-      return !(typeof healthChecks === 'string' || healthChecks instanceof String);
     };
 
     // TODO can be smarter about this based on current ports defined

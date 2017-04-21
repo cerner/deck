@@ -9,9 +9,9 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
   ACCOUNT_SERVICE
 ])
   .factory('dcosServerGroupCommandBuilder', function (accountService, $q) {
-    function attemptToSetValidAccount(application, defaultAccount, command) {
-      return accountService.listAccounts('dcos').then(function(dcosAccounts) {
-        var dcosAccountNames = _.map(dcosAccounts, 'name');
+    function attemptToSetValidAccount(application, defaultAccount, defaultDcosCluster, command) {
+      return accountService.getCredentialsKeyedByAccount('dcos').then(function(dcosAccountsByName) {
+        var dcosAccountNames = _.keys(dcosAccountsByName);
         var firstDcosAccount = null;
 
         if (application.accounts.length) {
@@ -26,7 +26,19 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
 
         command.account =
           defaultAccountIsValid ? defaultAccount : (firstDcosAccount ? firstDcosAccount : 'my-dcos-account');
+
+        attemptToSetValidDcosCluster(dcosAccountsByName, defaultDcosCluster, command);
       });
+    }
+
+    function attemptToSetValidDcosCluster(dcosAccountsByName, defaultDcosCluster, command) {
+      var selectedAccount = dcosAccountsByName[command.account];
+      if (selectedAccount) {
+        var clusterNames = _.map(selectedAccount.dcosClusters, 'name');
+        var defaultDcosClusterIsValid = defaultDcosCluster && clusterNames.includes(defaultDcosCluster);
+        command.dcosCluster = defaultDcosClusterIsValid ? defaultDcosCluster : (clusterNames.length == 1 ? clusterNames[0] : null);
+        command.region = command.dcosCluster;
+      }
     }
 
     function reconcileUpstreamImages(image, upstreamImages) {
@@ -102,11 +114,11 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
 
     function buildNewServerGroupCommand(application, defaults = {}) {
       var defaultAccount = defaults.account || DcosProviderSettings.defaults.account;
-      var defaultRegion = defaults.region || DcosProviderSettings.defaults.region;
+      var defaultDcosCluster = defaults.dcosCluster || DcosProviderSettings.defaults.dcosCluster;
 
       var command = {
-        region: defaultRegion,
         application: application.name,
+        group: null,
         stack: '',
         freeFormDetails: '',
         cmd: null,
@@ -148,7 +160,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         viewModel: {}
       };
 
-      attemptToSetValidAccount(application, defaultAccount, command);
+      attemptToSetValidAccount(application, defaultAccount, defaultDcosCluster, command);
 
       return $q.when(command);
     }
@@ -171,9 +183,16 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
 
       var command = existing.deployDescription;
 
+      // TODO Parsing out cluster/group - want to ultimately have this in clouddriver.
+      var regionParts = existing.region.split('_');
+      var dcosCluster = regionParts.splice(0,1)[0];
+      var group = regionParts.join('/');
+      
       command.cloudProvider = 'dcos';
       command.selectedProvider = 'dcos';
       command.account = existing.account;
+      command.dcosCluster = dcosCluster;
+      command.group = group;
       command.strategy = '';
       command.viewModel = {};
 

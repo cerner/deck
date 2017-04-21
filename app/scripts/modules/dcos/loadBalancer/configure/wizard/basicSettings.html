@@ -10,7 +10,6 @@
           <!-- Angular does not seem to run length validation on hidden inputs, hence the text + display:none -->
         <input type="text"
                style="display: none"
-               ng-maxlength="24"
                class="form-control input-sm"
                ng-model="loadBalancer.name"
                validate-unique="existingLoadBalancerNames"
@@ -26,6 +25,11 @@
           <account-select-field component="loadBalancer" field="account" accounts="accounts" provider="'dcos'" on-change="ctrl.accountUpdated()"></account-select-field>
         </div>
       </div>
+
+      <cluster-select-field required label-columns="3" component="loadBalancer" field="region"
+            account="loadBalancer.account" provider="'dcos'" clusters="dcosClusters" on-change="ctrl.dcosClusterUpdated()">
+      </cluster-select-field>
+
       <div class="form-group">
         <div class="col-md-3 sm-label-right">Stack <help-field key="dcos.loadBalancer.stack"></help-field></div>
         <div class="col-md-7">

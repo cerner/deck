@@ -5,17 +5,38 @@
         <b>Account</b>
       </div>
       <div class="col-md-7">
+        <!-- TODO readOnly?-->
         <account-select-field component="command" field="account" accounts="command.backingData.accounts" provider="'dcos'"></account-select-field>
       </div>
     </div>
 
+    <div class="col-md-12" ng-if="command.viewState.dirty.dcosCluster">
+      <div class="alert alert-warning">
+        <p><span class="glyphicon glyphicon-warning-sign"></span>
+          The DC/OS cluster [{{command.viewState.dirty.dcosCluster}}] is not associated to the selected account and was removed.
+        </p>
+        <p class="text-right">
+          <a class="btn btn-sm btn-default dirty-flag-dismiss" href ng-click="command.viewState.dirty.dcosCluster = null">Okay</a>
+        </p>
+      </div>
+    </div>
+    
+    <cluster-select-field required 
+                          component="command"
+                          field="dcosCluster"
+                          account="command.account"
+                          provider="'dcos'"
+                          label-columns="3"
+                          clusters="command.backingData.filtered.dcosClusters">
+    </cluster-select-field>
+
     <div class="form-group">
       <div class="col-md-3 sm-label-right">
-        Region
-        <help-field key="dcos.serverGroup.region"></help-field>
+        Group
+        <!-- TODO update help text -->
+        <help-field key="dcos.serverGroup.group"></help-field>
       </div>
-      <div class="col-md-7"><input type="text" class="form-control input-sm" name="region" ng-pattern="basicSettingsController.regionPattern" ng-model="command.region"
-          placeholder="default" /></div>
+      <div class="col-md-7"><input type="text" class="form-control input-sm" name="group" ng-pattern="basicSettingsController.regionPattern" ng-model="command.group"/></div>
     </div>
     <div class="form-group row slide-in" ng-if="basicSettings.region.$error.pattern">
       <div class="col-sm-9 col-sm-offset-2 error-message">

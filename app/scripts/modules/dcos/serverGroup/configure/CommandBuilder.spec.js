@@ -34,8 +34,8 @@ describe('dcosServerGroupCommandBuilder', function() {
     it('should use base server group otherwise use the default', function() {
       var baseServerGroup = {};
       baseServerGroup.deployDescription = {
-        account: 'prod',
-        region: 'test',
+        account: 'test-account',
+        region: 'cluster1/foo/bar',
         cluster: 'dcos-test-test',
         type: 'dcos',
         cloudProvider: 'dcos',

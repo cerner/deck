@@ -31,9 +31,10 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
       }
 
       return $q.all({
-        accounts: accountService.listAccounts('dcos'),
+        credentialsKeyedByAccount: accountService.getCredentialsKeyedByAccount('dcos'),
         allImages: imagesPromise
       }).then(function(backingData) {
+        backingData.accounts = _.keys(backingData.credentialsKeyedByAccount);
         backingData.filtered = {};
         backingData.allSecrets = {};
 
@@ -47,12 +48,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
 
         command.backingData = backingData;
 
-        var accountMap = _.fromPairs(_.map(backingData.accounts, function(account) {
-          return [account.name, accountService.getAccountDetails(account.name)];
-        }));
-
-        return $q.all(accountMap).then(function(accountMap) {
-          command.backingData.accountMap = accountMap;
+        return $q.all().then(function() {
           configureAccount(command);
           attachEventHandlers(command);
         });
@@ -75,29 +71,32 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
 
     function configureDockerRegistries(command) {
       var result = { dirty: {} };
-      command.backingData.filtered.dockerRegistries = command.backingData.account.dockerRegistries;
+
+      var selectedDcosCluster = _.find(command.backingData.filtered.dcosClusters, {name: command.dcosCluster});
+      if (selectedDcosCluster) {
+        command.backingData.filtered.dockerRegistries = selectedDcosCluster.dockerRegistries;
+      } else {
+        command.backingData.filtered.dockerRegistries = [];
+      }
+
       return result;
     }
 
     function configureImages(command) {
       var result = { dirty: {} };
 
-      if (!command.account) {
-        command.backingData.filtered.images = [];
-      } else {
-        var registryAccountNames = _.map(command.backingData.account.dockerRegistries, function(registry) {
-          return registry.accountName;
-        });
-        command.backingData.filtered.images = _.map(_.filter(command.backingData.allImages, function(image) {
-          return image.fromContext || image.fromTrigger || _.includes(registryAccountNames, image.account) || image.message;
-        }), function(image) {
-          return mapImage(image);
-        });
+      var registryAccountNames = _.map(command.backingData.filtered.dockerRegistries, function(registry) {
+        return registry.accountName;
+      });
+      command.backingData.filtered.images = _.map(_.filter(command.backingData.allImages, function(image) {
+        return image.fromContext || image.fromTrigger || _.includes(registryAccountNames, image.account) || image.message;
+      }), function(image) {
+        return mapImage(image);
+      });
 
-        if (command.docker.image && !_.some(command.backingData.filtered.images, {imageId: command.docker.image.imageId})) {
-          result.dirty.imageId = command.docker.image.imageId;
-          command.docker.image = null;
-        }
+      if (command.docker.image && !_.some(command.backingData.filtered.images, {imageId: command.docker.image.imageId})) {
+        result.dirty.imageId = command.docker.image.imageId;
+        command.docker.image = null;
       }
 
       return result;
@@ -124,15 +123,20 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
 
     function configureSecrets(command) {
       var result = { dirty: {} };
-      if (!command.account || !command.backingData.allSecrets[command.account]) {
+
+      // TODO clouddriver is going to have to change for this to work.
+      if (!command.region || !command.backingData.allSecrets[command.dcosCluster]) {
         command.backingData.filtered.secrets = [];
       } else {
-        var region = command.region || 'default';
-        var appPath = command.account + '/' + region + '/';
+        var appPath = command.account + '/' + command.region + '/';
 
-        command.backingData.filtered.secrets = _.filter(command.backingData.allSecrets[command.account].sort(), function (secret) {
+        command.backingData.filtered.secrets = _.filter(command.backingData.allSecrets[command.dcosCluster].sort(), function (secret) {
           var secretPath = secret.substring(0, secret.lastIndexOf('/') + 1);
           return appPath.startsWith(secretPath);
+        });
+
+        command.backingData.filtered.secrets = command.backingData.filtered.secrets.filter(function(elem, index, self) {
+          return index == self.indexOf(elem);
         });
       }
 
@@ -150,17 +154,39 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
       return result;
     }
 
+    function configureDcosClusters(command) {
+      var result = { dirty: {} };
+
+      // TODO not relevant to here, but introduce a defaultCluster type setting?
+
+      command.backingData.filtered.dcosClusters = command.backingData.account.dcosClusters;
+
+      if (!_.chain(command.backingData.filtered.dcosClusters).some({name: command.dcosCluster}).value()) {
+        result.dirty.dcosCluster = command.dcosCluster;
+        command.dcosCluster = null;
+      }
+
+      angular.extend(result.dirty, configureDockerRegistries(command).dirty);
+      angular.extend(result.dirty, configureImages(command).dirty);
+      angular.extend(result.dirty, configureSecrets(command).dirty);
+
+      return result;
+    }
+
     function configureAccount(command) {
       var result = { dirty: {} };
 
-      command.backingData.account = command.backingData.accountMap[command.account];
+      command.backingData.account = command.backingData.credentialsKeyedByAccount[command.account];
+
       if (command.backingData.account) {
-        angular.extend(result.dirty, configureDockerRegistries(command).dirty);
-        angular.extend(result.dirty, configureImages(command).dirty);
-        angular.extend(result.dirty, configureSecrets(command).dirty);
+        angular.extend(result.dirty, configureDcosClusters(command).dirty);
       }
 
       return result;
+    }
+
+    function updateRegion(command) {
+      command.region = command.dcosCluster + (command.group ? ((command.group.substring(0,1) == '/' ? '' : '/') + command.group) : '');
     }
 
     function attachEventHandlers(command) {
@@ -172,7 +198,20 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
         return result;
       };
 
-      command.regionChanged = function regionChanged() {
+      command.dcosClusterChanged = function dcosClusterChanged() {
+        updateRegion(command);
+
+        var result = { dirty: {} };
+        angular.extend(result.dirty, configureDockerRegistries(command).dirty);
+        angular.extend(result.dirty, configureSecrets(command).dirty);
+        command.viewState.dirty = command.viewState.dirty || {};
+        angular.extend(command.viewState.dirty, result.dirty);
+        return result;
+      };
+
+      command.groupChanged = function groupChanged() {
+        updateRegion(command);
+
         var result = { dirty: {} };
         angular.extend(result.dirty, configureSecrets(command).dirty);
         command.viewState.dirty = command.viewState.dirty || {};

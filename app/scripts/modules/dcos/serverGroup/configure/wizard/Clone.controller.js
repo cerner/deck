@@ -63,7 +63,8 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.clone', [
 
     function initializeWatches() {
       $scope.$watch('command.account', $scope.command.accountChanged);
-      $scope.$watch('command.region', $scope.command.regionChanged);
+      $scope.$watch('command.group', $scope.command.groupChanged);
+      $scope.$watch('command.dcosCluster', $scope.command.dcosClusterChanged);
     }
 
     function initializeWizardState() {

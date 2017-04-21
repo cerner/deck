@@ -34,7 +34,6 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
 
     $scope.state = {
       accountsLoaded: false,
-      loadBalancerNamesLoaded: false,
       submitting: false
     };
 
@@ -69,9 +68,8 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
       onTaskComplete: onTaskComplete,
     });
 
-    var allLoadBalancerNames = {};
-
     function initializeEditMode() {
+      $scope.state.accountsLoaded = true;
     }
 
     function initializeCreateMode() {
@@ -88,35 +86,20 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
       });
     }
 
-    function initializeLoadBalancerNames() {
-      loadBalancerReader.listLoadBalancers('dcos').then(function (loadBalancers) {
-        loadBalancers.forEach((loadBalancer) => {
-          let account = loadBalancer.account;
-          if (!allLoadBalancerNames[account]) {
-            allLoadBalancerNames[account] = {};
-          }
-          let namespace = loadBalancer.namespace;
-          if (!allLoadBalancerNames[account][namespace]) {
-            allLoadBalancerNames[account][namespace] = [];
-          }
-          allLoadBalancerNames[account][namespace].push(loadBalancer.name);
-        });
-
-        updateLoadBalancerNames();
-        $scope.state.loadBalancerNamesLoaded = true;
-      });
-    }
-
     function updateLoadBalancerNames() {
-      var account = $scope.loadBalancer.account;
-      var namespace = $scope.loadBalancer.namespace;
+      var account = $scope.loadBalancer.credentials,
+          region = $scope.loadBalancer.region;
 
-      $scope.existingLoadBalancerNames = [];
-      if (account && namespace &&
-          allLoadBalancerNames[account] &&
-          allLoadBalancerNames[account][namespace]) {
-        $scope.existingLoadBalancerNames = allLoadBalancerNames[account][namespace];
-      }
+      const accountLoadBalancersByRegion = {};
+      application.getDataSource('loadBalancers').refresh(true).then(() => {
+        application.getDataSource('loadBalancers').data.forEach((loadBalancer) => {
+          if (loadBalancer.account === account) {
+            accountLoadBalancersByRegion[loadBalancer.region] = accountLoadBalancersByRegion[loadBalancer.region] || [];
+            accountLoadBalancersByRegion[loadBalancer.region].push(loadBalancer.name);
+          }
+        });
+        $scope.existingLoadBalancerNames = accountLoadBalancersByRegion[region] || [];
+      });
     }
 
     // initialize controller
@@ -126,7 +109,7 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
       initializeCreateMode();
     } else {
       $scope.loadBalancer = dcosLoadBalancerTransformer.constructNewLoadBalancerTemplate();
-      initializeLoadBalancerNames();
+      updateLoadBalancerNames();
       initializeCreateMode();
     }
 
@@ -143,12 +126,12 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
 
     this.accountUpdated = function() {
       accountService.getAccountDetails($scope.loadBalancer.account).then(function(details) {
-        $scope.namespaces = details.namespaces;
-        ctrl.namespaceUpdated();
+        $scope.dcosClusters = details.dcosClusters;
+        ctrl.dcosClusterUpdated();
       });
     };
 
-    this.namespaceUpdated = function() {
+    this.dcosClusterUpdated = function() {
       updateLoadBalancerNames();
       ctrl.updateName();
     };
@@ -160,7 +143,7 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller',
       $scope.taskMonitor.submit(
         function() {
           var zones = {};
-          zones['global'] = ['global'];
+          zones[$scope.loadBalancer.region] = [$scope.loadBalancer.region];
           let params = {
             cloudProvider: 'dcos',
             availabilityZones: zones

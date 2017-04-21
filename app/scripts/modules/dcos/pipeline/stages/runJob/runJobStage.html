@@ -1,11 +1,22 @@
 <div ng-controller="dcosRunJobStageCtrl as ctrl">
 
   <stage-config-field label="Account">
-    <account-select-field component="ctrl.stage"
+    <account-select-field component="stage"
                           field="account"
                           provider="'dcos'"
-                          accounts="ctrl.accounts">
+                          accounts="backingData.accounts"
+                          on-change="ctrl.accountChanged()">
     </account-select-field>
+  </stage-config-field>
+
+  <stage-config-field label="Region" help-key="dcos.region">
+    <cluster-select-field component="stage"
+                          field="region"
+                          hide-label="true"
+                          field-columns="12"
+                          account="stage.account"
+                          clusters="stage.dcosClusters">
+    </cluster-select-field>
   </stage-config-field>
 
   <stage-config-field label="General">

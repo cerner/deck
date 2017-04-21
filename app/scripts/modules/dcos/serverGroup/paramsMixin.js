@@ -8,22 +8,28 @@ module.exports = angular
 
     function destroyServerGroup(serverGroup) {
       return {
-        region: serverGroup.region,
+        dcosCluster: serverGroup.dcosCluster,
+        group: serverGroup.group,
+        //region: serverGroup.region,
         interestingHealthProviderNames: ['DcosService']
       };
     }
 
     function enableServerGroup(serverGroup) {
       return {
-          region: serverGroup.region,
-          interestingHealthProviderNames: ['DcosService']
+        dcosCluster: serverGroup.dcosCluster,
+        group: serverGroup.group,
+        //region: serverGroup.region,
+        interestingHealthProviderNames: ['DcosService']
       };
     }
 
     function disableServerGroup(serverGroup) {
       return {
-          region: serverGroup.region,
-          interestingHealthProviderNames: ['DcosService']
+        dcosCluster: serverGroup.dcosCluster,
+        group: serverGroup.group,
+        //region: serverGroup.region,
+        interestingHealthProviderNames: ['DcosService']
       };
     }
 

@@ -125,13 +125,11 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
         title: 'Destroying ' + serverGroup.name,
       };
 
-      var submitMethod = function () {
-        return serverGroupWriter.destroyServerGroup(serverGroup, application, {
-          cloudProvider: 'dcos',
-          serverGroupName: serverGroup.name,
-          region: serverGroup.region,
-        });
-      };
+      var submitMethod = (params) => serverGroupWriter.destroyServerGroup(
+          serverGroup,
+          application,
+          angular.extend(params, dcosServerGroupParamsMixin.destroyServerGroup(serverGroup, application))
+      );
 
       var stateParams = {
         name: serverGroup.name,

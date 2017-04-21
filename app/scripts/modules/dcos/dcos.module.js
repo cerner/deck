@@ -34,6 +34,7 @@ module.exports = angular.module('spinnaker.dcos', [
   require('./serverGroup/details/details.dcos.module.js'),
   require('./serverGroup/transformer.js'),
   require('./validation/applicationName.validator.js'),
+  require('./common/selectField.directive.js')
 ])
   .config(function(cloudProviderRegistryProvider) {
     cloudProviderRegistryProvider.registerProvider('dcos', {

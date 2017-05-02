@@ -5,7 +5,6 @@
         <b>Account</b>
       </div>
       <div class="col-md-7">
-        <!-- TODO readOnly?-->
         <account-select-field component="command" field="account" accounts="command.backingData.accounts" provider="'dcos'"></account-select-field>
       </div>
     </div>
@@ -33,7 +32,6 @@
     <div class="form-group">
       <div class="col-md-3 sm-label-right">
         Group
-        <!-- TODO update help text -->
         <help-field key="dcos.serverGroup.group"></help-field>
       </div>
       <div class="col-md-7"><input type="text" class="form-control input-sm" name="group" ng-pattern="basicSettingsController.regionPattern" ng-model="command.group"/></div>

@@ -43,13 +43,11 @@ module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.runJobStage'
     }
 
     this.accountChanged = () => {
-      //this.accountChangedStream.next(null);
       setRegistry();
       this.updateRegions();
     };
 
     this.regionChanged = () => {
-      //this.regionChangedStream.next(null);
     };
 
     this.updateRegions = () => {

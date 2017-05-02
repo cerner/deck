@@ -94,7 +94,6 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.details.controller'
       const command = {
         cloudProvider: 'dcos',
         loadBalancerName: $scope.loadBalancer.name,
-        // TODO test this
         dcosCluster: $scope.loadBalancer.dcosCluster,
         region: $scope.loadBalancer.region,
         credentials: $scope.loadBalancer.account

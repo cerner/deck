@@ -10,7 +10,6 @@ module.exports = angular
       return {
         dcosCluster: serverGroup.dcosCluster,
         group: serverGroup.group,
-        //region: serverGroup.region,
         interestingHealthProviderNames: ['DcosService']
       };
     }
@@ -19,7 +18,6 @@ module.exports = angular
       return {
         dcosCluster: serverGroup.dcosCluster,
         group: serverGroup.group,
-        //region: serverGroup.region,
         interestingHealthProviderNames: ['DcosService']
       };
     }
@@ -28,7 +26,6 @@ module.exports = angular
       return {
         dcosCluster: serverGroup.dcosCluster,
         group: serverGroup.group,
-        //region: serverGroup.region,
         interestingHealthProviderNames: ['DcosService']
       };
     }

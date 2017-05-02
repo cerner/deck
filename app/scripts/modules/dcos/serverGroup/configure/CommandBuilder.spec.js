@@ -13,13 +13,13 @@ describe('dcosServerGroupCommandBuilder', function() {
     this.$scope = $rootScope;
     this.$q = $q;
     this.accountService = accountService;
-    spyOn(this.accountService, 'listAccounts').and.returnValue(
-      $q.when(['test'])
+    spyOn(this.accountService, 'getCredentialsKeyedByAccount').and.returnValue(
+      $q.when({'test': {}})
     );
   }));
 
   describe('buildNewServerGroupCommand', function() {
-    it('should initializes to default values', function () {
+    it('should initialize to default values', function () {
       var command = null;
       this.dcosServerGroupCommandBuilder.buildNewServerGroupCommand({ name: 'dcosApp', accounts: ['test'] }).then(function(result) {
         command = result;

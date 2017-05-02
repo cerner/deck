@@ -182,17 +182,10 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
       mode = mode || 'clone';
 
       var command = existing.deployDescription;
-
-      // TODO Parsing out cluster/group - want to ultimately have this in clouddriver.
-      var regionParts = existing.region.split('_');
-      var dcosCluster = regionParts.splice(0,1)[0];
-      var group = regionParts.join('/');
       
       command.cloudProvider = 'dcos';
       command.selectedProvider = 'dcos';
       command.account = existing.account;
-      command.dcosCluster = dcosCluster;
-      command.group = group;
       command.strategy = '';
       command.viewModel = {};
 

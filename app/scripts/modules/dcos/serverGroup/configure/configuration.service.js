@@ -124,7 +124,6 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
     function configureSecrets(command) {
       var result = { dirty: {} };
 
-      // TODO clouddriver is going to have to change for this to work.
       if (!command.region || !command.backingData.allSecrets[command.dcosCluster]) {
         command.backingData.filtered.secrets = [];
       } else {
@@ -133,10 +132,6 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
         command.backingData.filtered.secrets = _.filter(command.backingData.allSecrets[command.dcosCluster].sort(), function (secret) {
           var secretPath = secret.substring(0, secret.lastIndexOf('/') + 1);
           return appPath.startsWith(secretPath);
-        });
-
-        command.backingData.filtered.secrets = command.backingData.filtered.secrets.filter(function(elem, index, self) {
-          return index == self.indexOf(elem);
         });
       }
 
@@ -156,8 +151,6 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configurat
 
     function configureDcosClusters(command) {
       var result = { dirty: {} };
-
-      // TODO not relevant to here, but introduce a defaultCluster type setting?
 
       command.backingData.filtered.dcosClusters = command.backingData.account.dcosClusters;
 

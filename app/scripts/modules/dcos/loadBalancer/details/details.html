@@ -48,6 +48,8 @@
         <dd>{{loadBalancer.createdTime | timestamp}}</dd>
         <dt>In</dt>
         <dd><account-tag account="loadBalancer.account" pad="right"></account-tag></dd>
+        <dt>Region<dt>
+        <dd>{{loadBalancer.region}}</dd>
         <dt>JSON</dt>
         <dd><a href ng-click="ctrl.showJson()">Show JSON</a></dd>
         <dt>DC/OS UI</dt>

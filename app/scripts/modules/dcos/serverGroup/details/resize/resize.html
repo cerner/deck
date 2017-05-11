@@ -46,6 +46,19 @@
           </label>
         </div>
       </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <h4>Force Resize?</h4>
+        </div>
+      </div>
+      <div class="form-group form-inline">
+        <div class="col-md-11 col-md-offset-1">
+          <input type="checkbox"
+                 class="form-control input-sm highlight-pristine"
+                 ng-model="command.forceDeployment"
+                 style="width: 60px"/>
+        </div>
+      </div>
     </div>
 
     <div class="row" ng-if="command.platformHealthOnlyShowOverride">

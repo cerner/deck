@@ -575,4 +575,5 @@ module.exports = angular.module('spinnaker.core.help.contents', [])
     'dcos.serverGroup.healthCheck.intervalSeconds': 'Interval in seconds.',
     'dcos.serverGroup.healthCheck.timeoutSeconds': 'Timeout in seconds.',
     'dcos.serverGroup.docker.image': 'Configure your Docker container. Use DockerHub to find popular repositories.',
+    'dcos.serverGroup.forceDeployment': 'This can be used to forcefully stop an existing deployment currently running for this server group in DC/OS (as deployments within DC/OS will block anymore from starting for that app).',
   });

@@ -1,15 +1,17 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.shrinkClusterStage', [
+import { PipelineTemplates } from '@spinnaker/core';
+
+module.exports = angular.module('spinnaker.dcos.pipeline.stage.shrinkClusterStage', [
 ])
   .config(function(pipelineConfigProvider) {
     pipelineConfigProvider.registerStage({
       provides: 'shrinkCluster',
       cloudProvider: 'dcos',
       templateUrl: require('./shrinkClusterStage.html'),
-      executionDetailsUrl: require('core/pipeline/config/stages/shrinkCluster/templates/shrinkClusterExecutionDetails.template.html'),
+      executionDetailsUrl: PipelineTemplates.shrinkClusterExecutionDetails,
       validators: [
         { type: 'requiredField', fieldName: 'cluster' },
         { type: 'requiredField', fieldName: 'shrinkToSize', fieldLabel: 'shrink to [X] Server Groups'},

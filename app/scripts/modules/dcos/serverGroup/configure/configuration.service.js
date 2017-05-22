@@ -2,9 +2,9 @@
 
 import _ from 'lodash';
 
-import {ACCOUNT_SERVICE} from 'core/account/account.service';
+import { ACCOUNT_SERVICE } from '@spinnaker/core';
 
-let angular = require('angular');
+const angular = require('angular');
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos.configuration.service', [
   ACCOUNT_SERVICE,

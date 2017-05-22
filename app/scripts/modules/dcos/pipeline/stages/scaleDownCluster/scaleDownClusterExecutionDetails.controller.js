@@ -1,13 +1,12 @@
 'use strict';
 
-import {EXECUTION_DETAILS_SECTION_SERVICE} from 'core/delivery/details/executionDetailsSection.service';
+import { EXECUTION_DETAILS_SECTION_SERVICE } from '@spinnaker/core';
 
-let angular = require('angular');
+const angular = require('angular');
 
 module.exports = angular.module('spinnaker.core.pipeline.stage.scaleDownCluster.dcos.executionDetails.controller', [
-    require('angular-ui-router'),
+    require('angular-ui-router').default,
     EXECUTION_DETAILS_SECTION_SERVICE,
-    require('core/delivery/details/executionDetailsSectionNav.directive.js'),
 ])
   .controller('dcosScaleDownClusterExecutionDetailsCtrl', function ($scope, $stateParams, executionDetailsSectionService) {
 

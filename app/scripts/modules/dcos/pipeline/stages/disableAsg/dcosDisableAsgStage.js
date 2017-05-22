@@ -1,19 +1,17 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-import {StageConstants} from 'core/pipeline/config/stages/stageConstants';
+import { PipelineTemplates, StageConstants } from '@spinnaker/core';
 
-module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.disableAsgStage', [
-  require('core/application/modal/platformHealthOverride.directive.js'),
-])
+module.exports = angular.module('spinnaker.dcos.pipeline.stage.disableAsgStage', [])
   .config(function(pipelineConfigProvider) {
     pipelineConfigProvider.registerStage({
       provides: 'disableServerGroup',
       alias: 'disableAsg',
       cloudProvider: 'dcos',
       templateUrl: require('./disableAsgStage.html'),
-      executionDetailsUrl: require('core/pipeline/config/stages/disableAsg/templates/disableAsgExecutionDetails.template.html'),
+      executionDetailsUrl: PipelineTemplates.disableAsgExecutionDetails,
       executionStepLabelUrl: require('./disableAsgStepLabel.html'),
       validators: [
         {

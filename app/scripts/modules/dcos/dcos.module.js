@@ -1,9 +1,10 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-import {CLOUD_PROVIDER_REGISTRY} from 'core/cloudProvider/cloudProvider.registry';
-import {DCOS_KEY_VALUE_DETAILS} from './common/keyValueDetails.component';
+import { CLOUD_PROVIDER_REGISTRY } from '@spinnaker/core';
+import { DCOS_KEY_VALUE_DETAILS } from './common/keyValueDetails.component';
+import { DCOS_HELP } from './help/dcos.help';
 
 require('./logo/dcos.logo.less');
 
@@ -16,6 +17,7 @@ templates.keys().forEach(function(key) {
 module.exports = angular.module('spinnaker.dcos', [
   CLOUD_PROVIDER_REGISTRY,
   DCOS_KEY_VALUE_DETAILS,
+  DCOS_HELP,
   require('./instance/details/details.dcos.module.js'),
   require('./loadBalancer/configure/configure.dcos.module.js'),
   require('./loadBalancer/details/details.dcos.module.js'),

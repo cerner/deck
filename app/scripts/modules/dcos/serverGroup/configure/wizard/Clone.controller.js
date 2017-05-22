@@ -1,19 +1,15 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-import {V2_MODAL_WIZARD_SERVICE} from 'core/modal/wizard/v2modalWizard.service';
-import {SERVER_GROUP_WRITER} from 'core/serverGroup/serverGroupWriter.service';
-import {TASK_MONITOR_BUILDER} from 'core/task/monitor/taskMonitor.builder';
+import { V2_MODAL_WIZARD_SERVICE, SERVER_GROUP_WRITER, TASK_MONITOR_BUILDER } from '@spinnaker/core';
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos.clone', [
-  require('angular-ui-router'),
-  require('core/application/modal/platformHealthOverride.directive.js'),
+  require('angular-ui-router').default,
   SERVER_GROUP_WRITER,
   V2_MODAL_WIZARD_SERVICE,
   TASK_MONITOR_BUILDER,
   require('../configuration.service.js'),
-  require('core/modal/wizard/wizardSubFormValidation.service.js'),
 ])
   .controller('dcosCloneServerGroupController', function($scope, $uibModalInstance, $q, $state,
                                                                serverGroupWriter, v2modalWizardService, taskMonitorBuilder,

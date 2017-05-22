@@ -1,11 +1,10 @@
 'use strict';
 
-import {NAMING_SERVICE} from 'core/naming/naming.service';
+import { NAMING_SERVICE } from '@spinnaker/core';
 
-let angular = require('angular');
+const angular = require('angular');
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos.basicSettings', [
-  require('core/serverGroup/configure/common/basicSettingsMixin.controller.js'),
   NAMING_SERVICE,
 ])
   .controller('dcosServerGroupBasicSettingsController', function($scope, $controller, $uibModalStack, $state,

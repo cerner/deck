@@ -1,17 +1,17 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-import {StageConstants} from 'core/pipeline/config/stages/stageConstants';
+import { PipelineTemplates, StageConstants } from '@spinnaker/core';
 
-module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.destroyAsgStage', [])
+module.exports = angular.module('spinnaker.dcos.pipeline.stage.destroyAsgStage', [])
   .config(function(pipelineConfigProvider) {
     pipelineConfigProvider.registerStage({
       provides: 'destroyServerGroup',
       alias: 'destroyAsg',
       cloudProvider: 'dcos',
       templateUrl: require('./destroyAsgStage.html'),
-      executionDetailsUrl: require('core/pipeline/config/stages/destroyAsg/templates/destroyAsgExecutionDetails.template.html'),
+      executionDetailsUrl: PipelineTemplates.destroyAsgExecutionDetails,
       executionStepLabelUrl: require('./destroyAsgStepLabel.html'),
       validators: [
         {

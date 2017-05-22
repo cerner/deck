@@ -1,8 +1,7 @@
 'use strict';
 
-import {Observable, Subject} from 'rxjs';
-
-let angular = require('angular');
+const angular = require('angular');
+import { Observable, Subject } from 'rxjs';
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos.containerSettings', [
 ])

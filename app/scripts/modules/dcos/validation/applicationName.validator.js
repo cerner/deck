@@ -1,6 +1,6 @@
 'use strict';
 
-import {APPLICATION_NAME_VALIDATOR} from 'core/application/modal/validation/applicationName.validator';
+import { APPLICATION_NAME_VALIDATOR } from '@spinnaker/core';
 
 const angular = require('angular');
 

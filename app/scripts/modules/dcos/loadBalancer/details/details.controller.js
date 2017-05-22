@@ -1,17 +1,13 @@
 'use strict';
 
-import {ACCOUNT_SERVICE} from 'core/account/account.service';
-import {CONFIRMATION_MODAL_SERVICE} from 'core/confirmationModal/confirmationModal.service';
-import {LOAD_BALANCER_WRITE_SERVICE} from 'core/loadBalancer/loadBalancer.write.service';
+import { ACCOUNT_SERVICE, CONFIRMATION_MODAL_SERVICE, LOAD_BALANCER_WRITE_SERVICE, ServerGroupTemplates } from '@spinnaker/core';
 
-let angular = require('angular');
+const angular = require('angular');
 
 module.exports = angular.module('spinnaker.loadBalancer.dcos.details.controller', [
-  require('angular-ui-router'),
   ACCOUNT_SERVICE,
   CONFIRMATION_MODAL_SERVICE,
-  LOAD_BALANCER_WRITE_SERVICE,
-  require('core/utils/selectOnDblClick.directive.js'),
+  LOAD_BALANCER_WRITE_SERVICE
 ])
   .controller('dcosLoadBalancerDetailsController', function ($scope, $state, $uibModal, loadBalancer, app,
                                                                    confirmationModalService, accountService, loadBalancerWriter,
@@ -46,7 +42,7 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.details.controller'
       $scope.userDataModalTitle = 'Application JSON';
       $scope.userData = $scope.loadBalancer.json;
       $uibModal.open({
-        templateUrl: require('core/serverGroup/details/userData.html'),
+        templateUrl: ServerGroupTemplates.userData,
         controller: 'CloseableModalCtrl',
         scope: $scope
       });

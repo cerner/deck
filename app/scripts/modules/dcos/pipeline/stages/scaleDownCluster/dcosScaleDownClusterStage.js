@@ -1,8 +1,8 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.scaleDownClusterStage', [
+module.exports = angular.module('spinnaker.dcos.pipeline.stage.scaleDownClusterStage', [
   require('./scaleDownClusterExecutionDetails.controller.js')
 ])
   .config(function(pipelineConfigProvider) {

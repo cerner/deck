@@ -2,10 +2,10 @@
 
 import _ from 'lodash';
 
-let angular = require('angular');
+const angular = require('angular');
 
-import {ACCOUNT_SERVICE} from 'core/account/account.service';
-import {DcosProviderSettings} from '../dcos.settings';
+import { ACCOUNT_SERVICE } from '@spinnaker/core';
+import { DcosProviderSettings } from '../dcos.settings';
 
 module.exports = angular.module('spinnaker.dcos.loadBalancer.transformer', [ACCOUNT_SERVICE])
   .factory('dcosLoadBalancerTransformer', function (accountService, $q) {

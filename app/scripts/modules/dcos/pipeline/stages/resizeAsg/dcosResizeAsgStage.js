@@ -1,11 +1,10 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-import {StageConstants} from 'core/pipeline/config/stages/stageConstants';
+import { StageConstants } from '@spinnaker/core';
 
-module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.resizeAsgStage', [
-  require('core/application/modal/platformHealthOverride.directive.js'),
+module.exports = angular.module('spinnaker.dcos.pipeline.stage.resizeAsgStage', [
   require('./resizeAsgExecutionDetails.controller.js'),
 ])
   .config(function(pipelineConfigProvider) {

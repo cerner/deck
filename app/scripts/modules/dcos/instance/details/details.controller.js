@@ -2,25 +2,18 @@
 
 import _ from 'lodash';
 
-import {CLOUD_PROVIDER_REGISTRY} from 'core/cloudProvider/cloudProvider.registry';
-import {CONFIRMATION_MODAL_SERVICE} from 'core/confirmationModal/confirmationModal.service';
-import {INSTANCE_READ_SERVICE} from 'core/instance/instance.read.service';
-import {INSTANCE_WRITE_SERVICE} from 'core/instance/instance.write.service';
-import {RECENT_HISTORY_SERVICE} from 'core/history/recentHistory.service';
+import { CLOUD_PROVIDER_REGISTRY, CONFIRMATION_MODAL_SERVICE, INSTANCE_READ_SERVICE, INSTANCE_WRITE_SERVICE, RECENT_HISTORY_SERVICE, ServerGroupTemplates } from '@spinnaker/core';
 
-let angular = require('angular');
+const angular = require('angular');
 
 // NOTE: Instead of using instance.name, we're using instance.taskId. Instance.name is not
 // reliable after a recent gate change that merges account information into instance information - the account name field clobbers
 // the instance name.
 module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
-  require('angular-ui-router'),
-  require('angular-ui-bootstrap'),
   INSTANCE_WRITE_SERVICE,
   INSTANCE_READ_SERVICE,
   CONFIRMATION_MODAL_SERVICE,
   RECENT_HISTORY_SERVICE,
-  require('core/utils/selectOnDblClick.directive.js'),
   CLOUD_PROVIDER_REGISTRY,
 ])
   .controller('dcosInstanceDetailsController', function ($scope, $state, $uibModal,
@@ -42,7 +35,7 @@ module.exports = angular.module('spinnaker.instance.detail.dcos.controller', [
       $scope.userDataModalTitle = 'Task JSON';
       $scope.userData = $scope.instance.json;
       $uibModal.open({
-        templateUrl: require('core/serverGroup/details/userData.html'),
+        templateUrl: ServerGroupTemplates.userData,
         controller: 'CloseableModalCtrl',
         scope: $scope
       });

@@ -1,9 +1,8 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos', [
-  require('core/account/account.module.js'),
   require('./configuration.service.js'),
   require('./CommandBuilder.js'),
   require('./wizard/basicSettings.controller.js'),

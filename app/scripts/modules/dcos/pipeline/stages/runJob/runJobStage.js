@@ -2,12 +2,12 @@
 
 import _ from 'lodash';
 
-let angular = require('angular');
+const angular = require('angular');
 
 import {DOCKER_IMAGE_AND_TAG_SELECTOR_COMPONENT} from 'docker/image/dockerImageAndTagSelector.component';
 import {DcosProviderSettings} from '../../../dcos.settings';
 
-module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.runJobStage', [
+module.exports = angular.module('spinnaker.dcos.pipeline.stage.runJobStage', [
   DOCKER_IMAGE_AND_TAG_SELECTOR_COMPONENT,
   require('dcos/job/general.component.js'),
   //TODO Add back when scheduled jobs are supported better by Spinnaker
@@ -27,10 +27,9 @@ module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.runJobStage'
       ]
     });
   }).controller('dcosRunJobStageCtrl', function($scope, accountService, $q) {
-    
     let stage = $scope.stage;
     this.stage = $scope.stage;
-    
+
     if (!_.has(stage, 'name')) {
       _.set(stage, 'name', Date.now().toString());
     }
@@ -84,8 +83,8 @@ module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.runJobStage'
 
     function attemptToSetValidDcosCluster(dcosAccountsByName, stage) {
       var defaultDcosCluster = DcosProviderSettings.defaults.dcosCluster;
-      
       var selectedAccount = dcosAccountsByName[stage.account];
+
       if (selectedAccount) {
         var clusterNames = _.map(selectedAccount.dcosClusters, 'name');
         var defaultDcosClusterIsValid = defaultDcosCluster && clusterNames.includes(defaultDcosCluster);

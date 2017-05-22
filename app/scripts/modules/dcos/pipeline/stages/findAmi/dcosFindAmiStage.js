@@ -1,9 +1,9 @@
 'use strict';
 
-let angular = require('angular');
-import {ACCOUNT_SERVICE} from 'core/account/account.service';
+const angular = require('angular');
+import { ACCOUNT_SERVICE } from '@spinnaker/core';
 
-module.exports = angular.module('spinnaker.core.pipeline.stage.dcos.findAmiStage', [
+module.exports = angular.module('spinnaker.dcos.pipeline.stage.findAmiStage', [
   require('./findAmiExecutionDetails.controller.js'),
   ACCOUNT_SERVICE,
 ])

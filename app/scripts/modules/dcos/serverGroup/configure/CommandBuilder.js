@@ -1,9 +1,9 @@
 'use strict';
 
-let angular = require('angular');
+const angular = require('angular');
 
-import {ACCOUNT_SERVICE} from 'core/account/account.service';
-import {DcosProviderSettings} from '../../dcos.settings';
+import { ACCOUNT_SERVICE } from '@spinnaker/core';
+import { DcosProviderSettings } from '../../dcos.settings';
 
 module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.service', [
   ACCOUNT_SERVICE
@@ -182,7 +182,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
       mode = mode || 'clone';
 
       var command = existing.deployDescription;
-      
+
       command.cloudProvider = 'dcos';
       command.selectedProvider = 'dcos';
       command.account = existing.account;

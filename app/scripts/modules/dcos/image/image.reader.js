@@ -1,8 +1,8 @@
 'use strict';
 
-import {API_SERVICE} from 'core/api/api.service';
+import { API_SERVICE } from '@spinnaker/core';
 
-let angular = require('angular');
+const angular = require('angular');
 
 module.exports = angular.module('spinnaker.dcos.image.reader', [API_SERVICE])
   .factory('dcosImageReader', function ($q, API) {

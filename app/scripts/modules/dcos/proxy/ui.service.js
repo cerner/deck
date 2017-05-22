@@ -26,7 +26,15 @@ module.exports = angular.module('spinnaker.proxy.dcos.ui.service', [])
     function buildLink(accountName, region, name, taskName = null) {
 
       let host = getHost(accountName);
-      let link = host + '/' + apiPrefix + '/services/overview/' + encodeURIComponent('/' + accountName + '/' + region.replace('_', '/') + '/') + name;
+      let regionParts = region != null ? region.replace('_', '/').split('/') : [];
+      let link = host + '/' + apiPrefix + '/services/overview/';
+
+      if (regionParts.length > 1) {
+        link = link + encodeURIComponent('/' + accountName + '/' + regionParts.slice(1, regionParts.length).join('/') + '/') + name;
+      } else {
+        link = link + encodeURIComponent('/' + accountName + '/') + name;
+      }
+
       if (taskName) {
         link = link + '/tasks/' + taskName;
       }

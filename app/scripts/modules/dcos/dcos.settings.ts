@@ -3,7 +3,7 @@ import { IProviderSettings, SETTINGS } from '@spinnaker/core';
 export interface IDcosProviderSettings extends IProviderSettings {
   defaults: {
     account?: string;
-    proxy?: string;
+    dcosCluster?: string;
   };
 }
 

@@ -51,7 +51,7 @@ module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller',
     }
 
     this.uiLink = function uiLink() {
-      return dcosProxyUiService.buildLink($scope.serverGroup.account, $scope.serverGroup.region, $scope.serverGroup.name);
+      return dcosProxyUiService.buildLink($scope.serverGroup.clusterUrl, $scope.serverGroup.account, $scope.serverGroup.region, $scope.serverGroup.name);
     };
 
     this.showJson = function showJson() {

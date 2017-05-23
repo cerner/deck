@@ -35,7 +35,7 @@ module.exports = angular.module('spinnaker.loadBalancer.dcos.details.controller'
     }
 
     this.uiLink = function uiLink() {
-      return dcosProxyUiService.buildLoadBalancerLink($scope.loadBalancer.account, $scope.loadBalancer.name);
+      return dcosProxyUiService.buildLoadBalancerLink($scope.loadBalancer.clusterUrl, $scope.loadBalancer.account, $scope.loadBalancer.name);
     };
 
     this.showJson = function showJson() {

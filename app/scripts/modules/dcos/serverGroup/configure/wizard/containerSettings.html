@@ -42,13 +42,47 @@
         <input type="checkbox" name="forcePullCheck" ng-model="command.docker.forcePullImage" />
       </div>
     </div>
-    <div class="form-group">
-      <div class="col-sm-3 sm-label-right">
-        <b>Docker Parameters</b>
-      </div>
-      <div class="col-sm-9">
-        <map-editor model="command.docker.parameters" allow-empty="true"></map-editor>
-      </div>
-    </div>
+
+    <table class="table table-condensed packed">
+      <thead>
+        <tr>
+          <th style="width: 100%">Docker Parameters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="parameter in command.docker.parameters" ng-show="containerSettingsController.isParametersValid(command.docker.parameters)">
+          <td>
+            <div class="form-group">
+              <div class="col-md-3 sm-label-right">
+                Key
+              </div>
+              <div class="col-md-3">
+                <input type="text" class="form-control input-sm" name="key" ng-model="parameter.key" />
+              </div>
+              <div class="col-md-3 sm-label-right">
+                Value
+              </div>
+              <div class="col-md-3">
+                <input type="text" class="form-control input-sm" name="value" ng-model="parameter.value" />
+              </div>
+            </div>
+            <div class="col-md-12 sm-label-right">
+              <a class="btn btn-link sm-label" ng-click="containerSettingsController.removeParameter($index)">
+                <span class="glyphicon glyphicon-trash"></span> Remove Parameter
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="1">
+            <button class="add-new col-md-12" ng-click="containerSettingsController.addParameter()">
+              <span class="glyphicon glyphicon-plus-sign"></span> Add Parameter
+            </button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
   </div>
 </ng-form>

@@ -144,7 +144,7 @@ module.exports = angular.module('spinnaker.dcos.serverGroupCommandBuilder.servic
         secrets: {},
         taskKillGracePeriodSeconds: null,
         requirePorts: false,
-        docker: {parameters: {}},
+        docker: {parameters: []},
         labels: {},
         healthChecks: [],
         persistentVolumes: [],

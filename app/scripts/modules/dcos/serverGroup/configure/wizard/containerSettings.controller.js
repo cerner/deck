@@ -35,4 +35,23 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.containerS
     this.searchImages = function(q) {
       imageSearchResultsStream.next(q);
     };
+
+    this.isParametersValid = function(parameters) {
+      return !(typeof parameters === 'string' || parameters instanceof String);
+    };
+
+    this.addParameter = function() {
+      if (!this.isParametersValid($scope.command.docker.parameters)) {
+        $scope.command.docker.parameters = [];
+      }
+
+      $scope.command.docker.parameters.push({
+        key: '',
+        value: ''
+      });
+    };
+
+    this.removeParameter = function(index) {
+      $scope.command.docker.parameters.splice(index, 1);
+    };
   });

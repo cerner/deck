@@ -5,7 +5,6 @@ import { EXECUTION_DETAILS_SECTION_SERVICE } from '@spinnaker/core';
 const angular = require('angular');
 
 module.exports = angular.module('spinnaker.core.pipeline.stage.scaleDownCluster.dcos.executionDetails.controller', [
-    require('angular-ui-router').default,
     EXECUTION_DETAILS_SECTION_SERVICE,
 ])
   .controller('dcosScaleDownClusterExecutionDetailsCtrl', function ($scope, $stateParams, executionDetailsSectionService) {

@@ -12,7 +12,6 @@ import {
 } from '@spinnaker/core';
 
 module.exports = angular.module('spinnaker.serverGroup.details.dcos.controller', [
-  require('angular-ui-router').default,
   require('../configure/configure.dcos.module.js'),
   CONFIRMATION_MODAL_SERVICE,
   SERVER_GROUP_WARNING_MESSAGE_SERVICE,

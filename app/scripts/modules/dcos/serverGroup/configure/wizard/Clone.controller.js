@@ -5,7 +5,6 @@ const angular = require('angular');
 import { V2_MODAL_WIZARD_SERVICE, SERVER_GROUP_WRITER, TASK_MONITOR_BUILDER } from '@spinnaker/core';
 
 module.exports = angular.module('spinnaker.serverGroup.configure.dcos.clone', [
-  require('angular-ui-router').default,
   SERVER_GROUP_WRITER,
   V2_MODAL_WIZARD_SERVICE,
   TASK_MONITOR_BUILDER,

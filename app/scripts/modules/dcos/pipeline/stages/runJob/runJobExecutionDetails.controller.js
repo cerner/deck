@@ -4,7 +4,6 @@ const angular = require('angular');
 
 module.exports = angular
   .module('spinnaker.dcos.pipeline.stage.runJobExecutionDetails.controller', [
-    require('angular-ui-router').default,
   ])
   .controller('dcosRunJobExecutionDetailsCtrl', function ($scope, $stateParams, executionDetailsSectionService) {
 

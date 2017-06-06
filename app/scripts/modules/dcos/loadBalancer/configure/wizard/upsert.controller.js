@@ -5,7 +5,6 @@ const angular = require('angular');
 import { ACCOUNT_SERVICE, LOAD_BALANCER_READ_SERVICE, LOAD_BALANCER_WRITE_SERVICE, V2_MODAL_WIZARD_SERVICE, TASK_MONITOR_BUILDER, SEARCH_SERVICE } from '@spinnaker/core';
 
 module.exports = angular.module('spinnaker.loadBalancer.dcos.create.controller', [
-  require('angular-ui-router').default,
   LOAD_BALANCER_WRITE_SERVICE,
   LOAD_BALANCER_READ_SERVICE,
   ACCOUNT_SERVICE,

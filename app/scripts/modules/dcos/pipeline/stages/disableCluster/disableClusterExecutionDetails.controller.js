@@ -5,7 +5,6 @@ import { EXECUTION_DETAILS_SECTION_SERVICE } from '@spinnaker/core';
 const angular = require('angular');
 
 module.exports = angular.module('spinnaker.core.pipeline.stage.disableCluster.dcos.executionDetails.controller', [
-  require('angular-ui-router').default,
   EXECUTION_DETAILS_SECTION_SERVICE,
 ])
   .controller('dcosDisableClusterExecutionDetailsCtrl', function ($scope, $stateParams, executionDetailsSectionService) {

@@ -21,9 +21,8 @@ module.exports = angular
         delete command.source;
       }
 
-      if (!command.region) {
-        command.region = 'default';
-      }
+      command.availabilityZones = {};
+      command.availabilityZones[command.region] = [];
 
       command.cloudProvider = 'dcos';
       command.credentials = command.account;

@@ -7,10 +7,15 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChec
   .controller('dcosServerGroupHealthChecksController', function($scope) {
 
     var HTTP_PROTOCOL = 'HTTP';
-    var COMMAND_PROTOCOL = 'COMMAND';
+    var HTTPS_PROTOCOL = 'HTTPS';
     var TCP_PROTOCOL = 'TCP';
+    var COMMAND_PROTOCOL = 'COMMAND';
+    var MESOS_HTTP_PROTOCOL = 'MESOS_HTTP';
+    var MESOS_HTTPS_PROTOCOL = 'MESOS_HTTPS';
+    var MESOS_TCP_PROTOCOL = 'MESOS_TCP';
 
-    this.healthCheckProtocols = [HTTP_PROTOCOL, COMMAND_PROTOCOL, TCP_PROTOCOL];
+    this.healthCheckProtocols = [HTTP_PROTOCOL, HTTPS_PROTOCOL, TCP_PROTOCOL, COMMAND_PROTOCOL,
+                                 MESOS_HTTP_PROTOCOL, MESOS_HTTPS_PROTOCOL, MESOS_TCP_PROTOCOL];
     this.healthCheckPortTypes = ['Port Index', 'Port Number'];
 
     this.isHealthChecksValid = function(healthChecks) {
@@ -24,7 +29,8 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChec
     }
 
     this.isHttpProtocol = function(healthCheck) {
-      return healthCheck.protocol === HTTP_PROTOCOL;
+      return healthCheck.protocol === HTTP_PROTOCOL || healthCheck.protocol === HTTPS_PROTOCOL ||
+             healthCheck.protocol === MESOS_HTTP_PROTOCOL || healthCheck.protocol === MESOS_HTTPS_PROTOCOL;
     };
 
     this.isCommandProtocol = function(healthCheck) {
@@ -32,7 +38,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChec
     };
 
     this.isTcpProtocol = function(healthCheck) {
-      return healthCheck.protocol === TCP_PROTOCOL;
+      return healthCheck.protocol === TCP_PROTOCOL || healthCheck.protocol === MESOS_TCP_PROTOCOL;
     };
 
     // TODO can be smarter about this based on current ports defined
@@ -42,7 +48,7 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.healthChec
       }
 
       $scope.command.healthChecks.push({
-        protocol: HTTP_PROTOCOL,
+        protocol: MESOS_HTTP_PROTOCOL,
         path: null,
         command: null,
         gracePeriodSeconds: null,

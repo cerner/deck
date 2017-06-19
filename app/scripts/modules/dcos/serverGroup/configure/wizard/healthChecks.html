@@ -101,7 +101,7 @@
                   </ui-select-choices>
                 </ui-select>
               </div>
-              <div ng-show="healthCheck.portType === healthCheckController.healthCheckPortTypes[0]">
+              <div ng-show="healthCheckController.isHttpProtocol(healthCheck)">
                 <div class="col-md-3 sm-label-right">
                   Port Index
                 </div>
@@ -109,7 +109,7 @@
                   <input type="number" class="form-control input-sm" name="portIndex" ng-model="healthCheck.portIndex" min="0" />
                 </div>
               </div>
-              <div ng-show="healthCheck.portType === healthCheckController.healthCheckPortTypes[1]">
+              <div ng-show="healthCheckController.isTcpProtocol(healthCheck)">
                 <div class="col-md-3 sm-label-right">
                   Port Number
                 </div>

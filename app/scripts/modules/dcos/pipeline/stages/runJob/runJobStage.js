@@ -95,7 +95,7 @@ module.exports = angular.module('spinnaker.dcos.pipeline.stage.runJobStage', [
 
     function setRegistry() {
       if (stage.account) {
-        _.set(stage, 'docker.image.registry', $scope.backingData.credentialsKeyedByAccount[stage.account].dockerRegistries[0]);
+        _.set(stage, 'docker.image.registry', $scope.backingData.credentialsKeyedByAccount[stage.account].dockerRegistries[0].accountName);
       }
     }
 

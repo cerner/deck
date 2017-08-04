@@ -40,6 +40,14 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.clone', [
       requiresTemplateSelection: !!serverGroupCommand.viewState.requiresTemplateSelection,
     };
 
+    this.templateSelectionText = {
+      copied: [
+        'account, region, group, cluster name (stack, details)',
+        'container configuration',
+      ],
+      notCopied: [],
+    };
+
     $scope.taskMonitor = taskMonitorBuilder.buildTaskMonitor({
       application: application,
       title: 'Creating your server group',
@@ -106,8 +114,8 @@ module.exports = angular.module('spinnaker.serverGroup.configure.dcos.clone', [
       $scope.state.loaded = true;
     }
 
-    $scope.$on('template-selected', function() {
+    this.templateSelected = () => {
       $scope.state.requiresTemplateSelection = false;
       configureCommand();
-    });
+    };
   });

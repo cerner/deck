@@ -128,18 +128,19 @@ export class PipelineConfigService {
     const sorted = sortBy(pipelines, ['index', 'name']);
 
     // if there are pipelines with a bad index, fix that
-    const toReindex: IPromise<void>[] = [];
-    if (sorted && sorted.length) {
-      sorted.forEach((pipeline, index) => {
-        if (pipeline.index !== index) {
-          pipeline.index = index;
-          toReindex.push(this.savePipeline(pipeline));
-        }
-      });
-      if (toReindex.length) {
-        return this.$q.all(toReindex).then(() => sorted);
-      }
-    }
+    // const toReindex: IPromise<void>[] = [];
+    // if (sorted && sorted.length) {
+    //   sorted.forEach((pipeline, index) => {
+    //     if (pipeline.index !== index) {
+    //       pipeline.index = index;
+    //       toReindex.push(this.savePipeline(pipeline));
+    //     }
+    //   });
+    //   if (toReindex.length) {
+    //     return this.$q.all(toReindex).then(() => sorted);
+    //   }
+    // }
+
     return this.$q.resolve(sorted);
   }
 
